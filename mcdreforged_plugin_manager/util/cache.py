@@ -30,10 +30,31 @@ class MetaInfo(Serializable):
             text = list(self.description.values())[0]
         return text
 
+    @property
+    def brief(self):
+        return RTextList(
+            RText('- '),
+            RText(self.name),
+            RText(' ({}@{})'.format(self.id, self.version), RColor.gray),
+            '\n',
+            RText('By ' + ', '.join(self.authors)),
+            '\n',
+            RText(self.translated_description)
+        )
+
 
 class PluginMetaInfoStorage(Serializable):
     plugin_amount: int = 0
     plugins: Dict[str, MetaInfo] = {}  # plugin id -> plugin meta
+
+    def get_plugins_by_labels(self, labels: Optional[Union[type(None), str, List[str]]] = None):
+        if labels is None:
+            labels = ['information', 'tool', 'management', 'api']
+        if isinstance(labels, str):
+            labels = [labels]
+        for plugin in self.plugins.values():
+            if any([label in labels for label in plugin.labels]):
+                yield plugin
 
 
 class Cache(PluginMetaInfoStorage):
