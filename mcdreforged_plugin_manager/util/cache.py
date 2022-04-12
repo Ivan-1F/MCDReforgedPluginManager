@@ -1,6 +1,7 @@
 import json
 import os
-from typing import List, Dict
+import traceback
+from typing import List, Dict, Optional, Union, Generator
 
 import requests
 from mcdreforged.api.all import *
@@ -32,12 +33,7 @@ class MetaInfo(Serializable):
 
 class PluginMetaInfoStorage(Serializable):
     plugin_amount: int = 0
-    plugins: Dict[str, MetaInfo]  # plugin id -> plugin meta
-
-    def update(self, plugin_amount: int, plugins: Dict[str, MetaInfo]):
-        # not using Serializable#update_from since it will update this cache method
-        self.plugin_amount = plugin_amount
-        self.plugins = plugins
+    plugins: Dict[str, MetaInfo] = {}  # plugin id -> plugin meta
 
 
 class Cache(PluginMetaInfoStorage):
@@ -45,14 +41,15 @@ class Cache(PluginMetaInfoStorage):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.cache()
+        if traceback.extract_stack()[-2][2] == 'load':  # only cache when initializing by Cache#load
+            self.cache()
 
     @new_thread('mpm-cache')
     def cache(self):
         try:
             psi.logger.info(tr('cache.cache'))
             data = requests.get(config.source).json()
-            self.update(data['plugin_amount'], data['plugins'])
+            self.update_from(data)
             self.save()
         except requests.RequestException as e:
             psi.logger.warning(tr('cache.exception', e))
@@ -71,7 +68,7 @@ class Cache(PluginMetaInfoStorage):
             return cls()
         with open(cls.CACHE_PATH, 'r') as f:
             data = json.load(f)
-            return cls(plugin_amount=data['plugin_amount'], plugins=data['plugins'])
+            return cls.deserialize(data)
 
 
 cache = Cache.load()
