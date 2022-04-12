@@ -1,15 +1,15 @@
 {
-    "id": "my_plugin",
+    "id": "mcdreforged_plugin_manager",
     "version": "1.0.0",
-    "name": "My Plugin",
-    "description": "This description is a description to your plugin",
+    "name": "MCDReforged Plugin Manager",
+    "description": "Manage your mcdreforged plugins with ease",
     "author": [
-        "You"
+        "Ivan1F"
     ],
-    "link": "https://github.com/MCDReforged/MCDReforged-PluginTemplate",
+    "link": "https://github.com/Ivan1F/MCDReforgedPluginManager",
     "dependencies": {
     },
-
+    "entrypoint": "mcdreforged_plugin_manager.entries.mcdr_entry",
     "resources": [
         "lang"
     ]
