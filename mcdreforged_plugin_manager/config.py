@@ -25,7 +25,7 @@ class Configure(Serializable):
     def save(self):
         if not os.path.isdir(os.path.dirname(self.CONFIG_PATH)):
             os.makedirs(os.path.dirname(self.CONFIG_PATH))
-        with open(self.CONFIG_PATH, 'w', encoding='UTF-8') as f:
+        with open(self.CONFIG_PATH, 'w+', encoding='UTF-8') as f:
             YAML().dump(self.serialize(), f)
 
 
