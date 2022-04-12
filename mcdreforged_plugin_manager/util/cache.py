@@ -68,7 +68,9 @@ class Cache(PluginMetaInfoStorage):
             return cls()
         with open(cls.CACHE_PATH, 'r') as f:
             data = json.load(f)
-            return cls.deserialize(data)
+            obj = cls.deserialize(data)
+            obj.cache()
+            return obj
 
 
 cache = Cache.load()
