@@ -32,9 +32,9 @@ class MetaInfo(Serializable):
 
 class PluginMetaInfoStorage(Serializable):
     plugin_amount: int = 0
-    plugins: List[MetaInfo]
+    plugins: Dict[str, MetaInfo]  # plugin id -> plugin meta
 
-    def update(self, plugin_amount: int, plugins: List[MetaInfo]):
+    def update(self, plugin_amount: int, plugins: Dict[str, MetaInfo]):
         # not using Serializable#update_from since it will update this cache method
         self.plugin_amount = plugin_amount
         self.plugins = plugins
@@ -52,7 +52,7 @@ class Cache(PluginMetaInfoStorage):
         try:
             psi.logger.info(tr('cache.cache'))
             data = requests.get(config.source).json()
-            self.update(data['plugin_amount'], list(data['plugins'].values()))
+            self.update(data['plugin_amount'], data['plugins'])
             self.save()
         except requests.RequestException as e:
             psi.logger.warning(tr('cache.exception', e))
