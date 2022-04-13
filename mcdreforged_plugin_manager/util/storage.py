@@ -3,6 +3,7 @@ from typing import List, Dict, Optional, Union
 from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.constants import psi
+from mcdreforged_plugin_manager.util.denpendency_util import check_dependencies
 from mcdreforged_plugin_manager.util.text_util import italic, parse_markdown, command_run, link, new_line
 from mcdreforged_plugin_manager.util.translation import tr
 
@@ -35,7 +36,8 @@ class MetaInfo(Serializable):
     @property
     def action_bar(self):
         return RTextList(
-            command_run('[↓]', '!!mpm install {}'.format(self.id), tr('plugin.operation.install')).set_color(RColor.green),
+            command_run('[↓]', '!!mpm install {}'.format(self.id), tr('plugin.operation.install')).set_color(
+                RColor.green),
             command_run('[ⓘ]', '!!mpm info {}'.format(self.id), tr('plugin.operation.show_info')).set_color(RColor.aqua)
         )
 
@@ -78,3 +80,6 @@ class PluginMetaInfoStorage(Serializable):
         for plugin in self.plugins.values():
             if query in plugin.name or query in plugin.id:
                 yield plugin
+
+    def is_plugin_present(self, plugin_id: str):
+        return plugin_id in self.plugins.keys()

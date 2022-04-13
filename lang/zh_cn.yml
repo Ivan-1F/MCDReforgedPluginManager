@@ -7,6 +7,7 @@ mcdreforged_plugin_manager:
     no_description: 无简介
     author: 作者：{0}
     label: 标签：{0}
+    not_found: §c未找到插件 {0}
     operation:
       install: 安装
       show_info: 显示信息
