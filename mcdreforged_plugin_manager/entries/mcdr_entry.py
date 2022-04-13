@@ -26,14 +26,6 @@ def register_commands(server: PluginServerInterface):
                 .runs(lambda src, ctx: search(src, ctx['query']))
             )
         )
-        .then(
-            get_literal('info')
-            .then(
-                Text('plugin_id')
-                .suggests(cache.get_plugin_ids)
-                .runs(lambda src, ctx: info(src, ctx['plugin_id']))
-            )
-        )
     )
 
 
