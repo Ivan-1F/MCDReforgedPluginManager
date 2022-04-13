@@ -94,7 +94,7 @@ class MetaInfo(Serializable):
             brief.append(tr('plugin.detail.dependency'))
             brief.append(new_line())
             brief.append(self.formatted_dependencies)
-        if self.requirements != 0:
+        if len(self.requirements) != 0:
             brief.append(new_line())
             brief.append(new_line())
             brief.append(tr('plugin.detail.requirement'))

@@ -31,7 +31,7 @@ def check_version(name: str, requirement: str, version: str):
 
 
 def check_dependency(plugin_id: str, requirement: str):
-    if plugin_id not in psi.get_plugin_list():
+    if plugin_id not in psi.get_plugin_list() and plugin_id != 'mcdreforged':
         raise DependencyNotFound(tr('dependency.dependency_not_found', plugin_id))
     metadata = psi.get_plugin_metadata(plugin_id)
     check_version(plugin_id, requirement, metadata.version)

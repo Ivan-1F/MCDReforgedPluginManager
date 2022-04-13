@@ -21,6 +21,10 @@ def parse_python_requirement(line: str) -> Tuple[str, str]:
         comps = line.rsplit(criterion, 1)
         if len(comps) == 2:
             package = comps[0]
-            requirement = comps[1]
+            requirement = criterion + comps[1]
             return package, requirement
     return line, '*'
+
+
+if __name__ == '__main__':
+    print(parse_python_requirement('mcdreforged>=2.0.1'))
