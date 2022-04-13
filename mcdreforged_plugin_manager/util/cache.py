@@ -7,7 +7,7 @@ from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.util.storage import PluginMetaInfoStorage
+from mcdreforged_plugin_manager.util.storage import PluginMetaInfoStorage, ReleaseSummary
 from mcdreforged_plugin_manager.util.translation import tr
 
 
@@ -25,6 +25,10 @@ class Cache(PluginMetaInfoStorage):
             psi.logger.info(tr('cache.cache'))
             data = requests.get(config.get_source + '/plugins.json').json()
             self.update_from(data)
+            if config.cache_releases:
+                for plugin in self.plugins.values():
+                    psi.logger.info(tr('cache.release.cache', plugin.id))
+                    plugin.release_summary = ReleaseSummary.of(plugin.id)
             self.save()
         except requests.RequestException as e:
             psi.logger.warning(tr('cache.exception', e))

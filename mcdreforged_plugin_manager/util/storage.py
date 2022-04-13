@@ -46,7 +46,8 @@ class ReleaseSummary(Serializable):
         try:
             data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id)).json()
             return cls.deserialize(data)
-        except requests.RequestException:
+        except requests.RequestException as e:
+            psi.logger.warning(tr('cache.release.exception', plugin_id, e))
             return None
 
 
@@ -60,6 +61,7 @@ class MetaInfo(Serializable):
     dependencies: Dict[str, str]
     requirements: List[str]
     description: Dict[str, str]
+    release_summary: Optional[ReleaseSummary]
 
     @property
     def formatted_description(self) -> RTextBase:
@@ -128,11 +130,13 @@ class MetaInfo(Serializable):
                 ))
         return insert_new_lines(result)
 
+    def get_release_summary(self):
+        return ReleaseSummary.of(self.id) if self.release_summary is None else self.release_summary
+
     @property
     def formatted_releases(self):
         result: List[RTextBase] = []
-        summary = ReleaseSummary.of(self.id)
-        for release in summary.releases:
+        for release in self.get_release_summary().releases:
             for asset in release.get_mcdr_assets():
                 asset_text = RTextList(
                     link(asset.name, release.url), ' | ', size(asset.size), ' | ',

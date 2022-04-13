@@ -11,6 +11,7 @@ class Configure(Serializable):
 
     permission: int = PermissionLevel.PHYSICAL_SERVER_CONTROL_LEVEL
     source: str = 'https://raw.githubusercontent.com/MCDReforged/PluginCatalogue/meta'
+    cache_releases: bool = False
 
     @property
     def get_source(self):
