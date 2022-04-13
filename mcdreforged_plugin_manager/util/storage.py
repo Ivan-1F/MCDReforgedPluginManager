@@ -41,7 +41,7 @@ class MetaInfo(Serializable):
         return RTextList(
             command_run('[↓]', '!!mpm install {}'.format(self.id), tr('plugin.operation.install')).set_color(
                 RColor.green),
-            command_run('[ⓘ]', '!!mpm info {}'.format(self.id), tr('plugin.operation.show_info')).set_color(RColor.aqua)
+            command_run('[i]', '!!mpm info {}'.format(self.id), tr('plugin.operation.show_info')).set_color(RColor.aqua)
         )
 
     @property
