@@ -4,6 +4,21 @@ from typing import List
 from mcdreforged.api.all import *
 
 
+def italic(text: str) -> RTextBase:
+    return RText(text).set_styles(RStyle.italic)
+
+
+def bold(text: str) -> RTextBase:
+    return RText(text).set_styles(RStyle.bold)
+
+
+def link(text: str, target: str) -> RTextBase:
+    return RText(text, RColor.blue) \
+        .set_styles([RStyle.underlined]) \
+        .c(RAction.open_url, target) \
+        .h(target)
+
+
 def parse_markdown(text: str) -> RTextList:
     components: List[RTextBase] = []
 
@@ -14,22 +29,13 @@ def parse_markdown(text: str) -> RTextList:
         pos += 1
         return '{' + str(pos) + '}'
 
-    links = [
-        RText(link[0], RColor.blue)
-        .set_styles([RStyle.underlined])
-        .c(RAction.open_url, link[1])
-        .h(link[1])
-        for link in re.findall(r'\[(.*?)]\((.*?)\)', text)
-    ]
-    [components.append(link) for link in links]
+    [components.append(item) for item in map(lambda x: link(*x), re.findall(r'\[(.*?)]\((.*?)\)', text))]
     text = re.sub(r'\[(.*?)]\((.*?)\)', next_pos, text)
 
-    bolds = [RText(bold).set_styles(RStyle.bold) for bold in re.findall(r'\*\*(.*)\*\*', text)]
-    [components.append(bold) for bold in bolds]
+    [components.append(item) for item in map(bold, re.findall(r'\*\*(.*)\*\*', text))]
     text = re.sub(r'\*\*(.*)\*\*', next_pos, text)
 
-    italics = [RText(italic).set_styles(RStyle.italic) for italic in re.findall(r'\*(.*)\*', text)]
-    [components.append(italic) for italic in italics]
+    [components.append(item) for item in map(italic, re.findall(r'\*(.*)\*', text))]
     text = re.sub(r'\*(.*)\*', next_pos, text)
 
     pointer = 0
