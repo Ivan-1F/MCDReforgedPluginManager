@@ -44,7 +44,7 @@ class ReleaseSummary(Serializable):
     @classmethod
     def of(cls, plugin_id: str):
         try:
-            data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id)).json()
+            data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id), timeout=config.timeout).json()
             return cls.deserialize(data)
         except requests.RequestException as e:
             psi.logger.warning(tr('cache.release.exception', plugin_id, e))

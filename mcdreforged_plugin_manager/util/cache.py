@@ -21,9 +21,10 @@ class Cache(PluginMetaInfoStorage):
 
     @new_thread('mpm-cache')
     def cache(self):
+        before = self.plugin_amount
         try:
             psi.logger.info(tr('cache.cache'))
-            data = requests.get(config.get_source + '/plugins.json').json()
+            data = requests.get(config.get_source + '/plugins.json', timeout=config.timeout).json()
             self.update_from(data)
             if config.cache_releases:
                 for plugin in self.plugins.values():
@@ -33,7 +34,7 @@ class Cache(PluginMetaInfoStorage):
         except requests.RequestException as e:
             psi.logger.warning(tr('cache.exception', e))
         else:
-            psi.logger.info(tr('cache.cached'))
+            psi.logger.info(tr('cache.cached', self.plugin_amount - before))
 
     def save(self):
         if not os.path.isdir(os.path.dirname(self.CACHE_PATH)):
