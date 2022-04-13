@@ -3,7 +3,6 @@ from typing import List, Dict, Optional, Union
 from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.util.denpendency_util import check_dependencies
 from mcdreforged_plugin_manager.util.text_util import italic, parse_markdown, command_run, link, new_line
 from mcdreforged_plugin_manager.util.translation import tr
 
