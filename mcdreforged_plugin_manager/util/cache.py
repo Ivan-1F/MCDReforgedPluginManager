@@ -56,6 +56,11 @@ class PluginMetaInfoStorage(Serializable):
             if any([label in labels for label in plugin.labels]):
                 yield plugin
 
+    def search(self, query: str):
+        for plugin in self.plugins.values():
+            if query in plugin.name or query in plugin.id:
+                yield plugin
+
 
 class Cache(PluginMetaInfoStorage):
     CACHE_PATH = os.path.join(psi.get_data_folder(), 'cache.json')
