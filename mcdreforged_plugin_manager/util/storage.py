@@ -51,11 +51,9 @@ class MetaInfo(Serializable):
             '\n',
             RTextList('- ', link(RText(self.name), self.repository), ' ', self.version_text),
             new_line(),
-            RTextList(
-                tr('plugin.author', ', '.join(self.authors)).set_color(RColor.aqua),
-                ' | ',
-                tr('plugin.label', ', '.join(self.labels)).set_color(RColor.aqua),
-            ),
+            tr('plugin.author', ', '.join(self.authors)),
+            new_line(),
+            tr('plugin.label', ', '.join(self.labels)),
             new_line(),
             self.formatted_description,
         )
