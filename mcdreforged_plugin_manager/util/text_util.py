@@ -13,7 +13,7 @@ def bold(text: Any) -> RTextBase:
 
 
 def link(text: Any, target: Any) -> RTextBase:
-    return RText(text, RColor.blue) \
+    return RText(text, RColor.aqua) \
         .set_styles([RStyle.underlined]) \
         .c(RAction.open_url, target) \
         .h(target)
