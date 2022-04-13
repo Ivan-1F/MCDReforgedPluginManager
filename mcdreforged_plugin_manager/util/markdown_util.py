@@ -1,5 +1,5 @@
 import re
-from typing import List, Any
+from typing import List, Any, Optional
 
 from mcdreforged.api.all import *
 
@@ -21,6 +21,11 @@ def link(text: Any, target: Any) -> RTextBase:
 
 def new_line() -> RTextBase:
     return RText('\n')
+
+
+def command_run(message: Any, command: str, text: Optional[Any] = None):
+    fancy_text = message.copy() if isinstance(message, RTextBase) else RText(message)
+    return fancy_text.set_hover_text(text).set_click_event(RAction.run_command, command)
 
 
 def parse_markdown(text: str) -> RTextList:

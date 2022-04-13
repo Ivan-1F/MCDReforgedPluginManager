@@ -1,14 +1,14 @@
 import json
 import os
 import traceback
-from typing import List, Dict, Optional, Union, Generator
+from typing import List, Dict, Optional, Union
 
 import requests
 from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.util.markdown_util import parse_markdown, italic, link, new_line
+from mcdreforged_plugin_manager.util.markdown_util import parse_markdown, italic, link, new_line, command_run
 from mcdreforged_plugin_manager.util.translation import tr
 
 
@@ -38,8 +38,17 @@ class MetaInfo(Serializable):
         return RText('({}@{})'.format(self.id, self.version), RColor.gray)
 
     @property
+    def action_bar(self):
+        return RTextList(
+            command_run('[↓]', '!!mpm install {}'.format(self.id), tr('plugin.operation.install')).set_color(RColor.green),
+            command_run('[ⓘ]', '!!mpm info {}'.format(self.id), tr('plugin.operation.show_info')).set_color(RColor.aqua)
+        )
+
+    @property
     def brief(self):
         return RTextList(
+            self.action_bar,
+            '\n',
             RTextList(
                 '- ',
                 link(RText(self.name), self.repository),
