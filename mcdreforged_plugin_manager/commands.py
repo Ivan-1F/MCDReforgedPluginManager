@@ -30,4 +30,4 @@ def search(source: CommandSource, query: str):
 
 @ensure_plugin_id
 def info(source: CommandSource, plugin_id: str):
-    raise NotImplementedError
+    source.reply(cache.get_plugin_by_id(plugin_id).detail)

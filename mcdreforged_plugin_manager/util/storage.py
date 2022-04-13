@@ -58,8 +58,6 @@ class MetaInfo(Serializable):
             ),
             new_line(),
             self.formatted_description,
-            new_line(),
-            self.formatted_requirements,
         )
 
     @staticmethod
@@ -89,7 +87,21 @@ class MetaInfo(Serializable):
 
     @property
     def detail(self):
-        return self.brief
+        brief = self.brief
+        if len(self.dependencies.items()) != 0:
+            brief.append(new_line())
+            brief.append(new_line())
+            brief.append(tr('plugin.detail.dependency'))
+            brief.append(new_line())
+            brief.append(self.formatted_dependencies)
+        if self.requirements != 0:
+            brief.append(new_line())
+            brief.append(new_line())
+            brief.append(tr('plugin.detail.requirement'))
+            brief.append(new_line())
+            brief.append(self.formatted_requirements)
+
+        return brief
 
     @property
     def formatted_requirements(self):
@@ -122,3 +134,6 @@ class PluginMetaInfoStorage(Serializable):
 
     def is_plugin_present(self, plugin_id: str):
         return plugin_id in self.plugins.keys()
+
+    def get_plugin_by_id(self, plugin_id: str):
+        return self.plugins.get(plugin_id)

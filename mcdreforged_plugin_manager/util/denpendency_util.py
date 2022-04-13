@@ -22,23 +22,23 @@ class InvalidDependency(DependencyError):
     pass
 
 
-def check_version(requirement: str, version: str):
+def check_version(name: str, requirement: str, version: str):
     try:
         if not VersionRequirement(requirement).accept(version):
-            raise DependencyNotFound(tr('dependency.dependency_not_met', package, requirement, version))
+            raise DependencyNotFound(tr('dependency.dependency_not_met', name, requirement, version))
     except VersionParsingError as e:
-        raise InvalidDependency(tr('dependency.invalid_dependency', package, e))
+        raise InvalidDependency(tr('dependency.invalid_dependency', name, e))
 
 
 def check_dependency(plugin_id: str, requirement: str):
     if plugin_id not in psi.get_plugin_list():
         raise DependencyNotFound(tr('dependency.dependency_not_found', plugin_id))
     metadata = psi.get_plugin_metadata(plugin_id)
-    check_version(requirement, metadata.version)
+    check_version(plugin_id, requirement, metadata.version)
 
 
 def check_requirement(package: str, requirement: str):
     if get_package_version(package) is None:
         raise DependencyNotFound(tr('dependency.dependency_not_found', package))
     version = get_package_version(package)
-    check_version(requirement, version)
+    check_version(package, requirement, version)
