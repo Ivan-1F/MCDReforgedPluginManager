@@ -26,9 +26,10 @@ class Cache(PluginMetaInfoStorage):
             psi.logger.info(tr('cache.cache'))
             data = requests.get(config.get_source + '/plugins.json', timeout=config.timeout).json()
             self.update_from(data)
-            if config.cache_releases:
+            if config.cache_releases.enabled:
                 for plugin in self.plugins.values():
-                    psi.logger.info(tr('cache.release.cache', plugin.id))
+                    if config.cache_releases.show_log:
+                        psi.logger.info(tr('cache.release.cache', plugin.id))
                     plugin.release_summary = ReleaseSummary.of(plugin.id)
             self.save()
         except requests.RequestException as e:
