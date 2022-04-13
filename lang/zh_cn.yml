@@ -5,17 +5,17 @@ mcdreforged_plugin_manager:
     exception: '插件库索引更新失败: {0}'
   plugin:
     no_description: 无简介
-    author: 作者：{0}
-    label: 标签：{0}
+    author: '作者: {0}'
+    label: '标签: {0}'
     not_found: §c未找到插件 {0}
     operation:
       install: 安装
       show_info: 显示信息
     detail:
-      dependency: 插件依赖：
-      requirement: Python 包依赖
+      dependency: '插件依赖:'
+      requirement: 'Python包依赖:'
   dependency:
     dependency_not_found: 未找到依赖项 {0}
     dependency_not_met: 依赖项 {0} 不满足版本约束 {1}，找到版本 {2}
-    invalid_dependency: 无效的依赖项 {0}：{1}
+    invalid_dependency: '无效的依赖项 {0}: {1}'
     satisfied: 依赖项满足
