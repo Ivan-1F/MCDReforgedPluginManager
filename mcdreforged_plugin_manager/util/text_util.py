@@ -23,6 +23,15 @@ def new_line() -> RTextBase:
     return RText('\n')
 
 
+def insert_new_lines(texts: List[RTextBase]) -> RTextBase:
+    result = RTextList()
+    for index, text in enumerate(texts):
+        result.append(text)
+        if index != len(texts) - 1:
+            result.append(new_line())
+    return result
+
+
 def command_run(message: Any, command: str, text: Optional[Any] = None):
     fancy_text = message.copy() if isinstance(message, RTextBase) else RText(message)
     return fancy_text.set_hover_text(text).set_click_event(RAction.run_command, command)
@@ -63,3 +72,9 @@ def parse_markdown(text: str) -> RTextList:
 if __name__ == '__main__':
     parse_markdown('[QuickBackupM](https://github.com/TISUnion/QuickBackupM) is a plugin of [MCDReforged]('
                    'https://github.com/Fallen_Breath/MCDReforged) to **backup** the *server*')
+
+    print(insert_new_lines([]).to_json_str())
+    print(insert_new_lines([RText('message')]).to_json_str())
+    print(RText('message').to_json_str())
+    print(insert_new_lines([RText('hello'), RText('world')]).to_json_str())
+    print(RText('message').to_json_str())

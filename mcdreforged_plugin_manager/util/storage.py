@@ -1,10 +1,13 @@
-from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Union, Callable
 
 from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.util.denpendency_util import check_dependency, DependencyNotFound, DependencyNotMet
-from mcdreforged_plugin_manager.util.text_util import italic, parse_markdown, command_run, link, new_line
+from mcdreforged_plugin_manager.util.denpendency_util import check_dependency, DependencyNotFound, DependencyNotMet, \
+    check_requirement, InvalidDependency
+from mcdreforged_plugin_manager.util.misc import parse_python_requirement
+from mcdreforged_plugin_manager.util.text_util import italic, parse_markdown, command_run, link, new_line, \
+    insert_new_lines
 from mcdreforged_plugin_manager.util.translation import tr
 
 
@@ -56,33 +59,47 @@ class MetaInfo(Serializable):
             new_line(),
             self.formatted_description,
             new_line(),
+            self.formatted_requirements,
         )
 
-    @property
-    def formatted_dependencies(self):
-        result = RTextList()
-        for plugin_id, requirement in self.dependencies.items():
-            plugin_id_text = RText(plugin_id)
+    @staticmethod
+    def format_dependencies(check: Callable[[str, str], None], dependencies: Dict[str, str]):
+        result: List[RTextBase] = []
+        for item, requirement in dependencies.items():
+            item_text = RText(item)
             requirement_text = RText(requirement)
             try:
-                check_dependency(plugin_id, requirement)
-            except DependencyNotFound as e:
-                plugin_id_text.set_color(RColor.red).h(e)
+                check(item, requirement)
+            except (DependencyNotFound, InvalidDependency) as e:
+                item_text.set_color(RColor.red).h(e)
                 requirement_text.set_color(RColor.red).h(e)
             except DependencyNotMet as e:
-                plugin_id_text.set_color(RColor.green)
+                item_text.set_color(RColor.green)
                 requirement_text.set_color(RColor.red).h(e)
             else:
-                plugin_id_text.set_color(RColor.green)
+                item_text.set_color(RColor.green)
                 requirement_text.set_color(RColor.green)
             finally:
                 result.append(RTextList(
-                    plugin_id_text,
+                    item_text,
                     ' | ',
                     requirement_text
                 ))
-                result.append(new_line())
-        return result
+        return insert_new_lines(result)
+
+    @property
+    def detail(self):
+        return self.brief
+
+    @property
+    def formatted_requirements(self):
+        requirements = {parse_python_requirement(requirement)[0]: parse_python_requirement(requirement)[1]
+                        for requirement in self.requirements}
+        return self.format_dependencies(check_requirement, requirements)
+
+    @property
+    def formatted_dependencies(self):
+        return self.format_dependencies(check_dependency, self.dependencies)
 
 
 class PluginMetaInfoStorage(Serializable):

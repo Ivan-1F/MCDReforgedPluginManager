@@ -1,0 +1,27 @@
+import importlib
+from itertools import chain
+from typing import Tuple, Iterable, Any
+
+from mcdreforged.api.all import *
+
+
+def get_package_version(package_name: str):
+    try:
+        module = importlib.import_module(package_name)
+
+        if hasattr(module, '__version__'):
+            return module.__version__
+        else:
+            return None
+    except ImportError:
+        return None
+
+
+def parse_python_requirement(line: str) -> Tuple[str, str]:
+    for criterion in VersionRequirement.CRITERIONS.keys():
+        comps = line.rsplit(criterion, 1)
+        if len(comps) == 2:
+            package = comps[0]
+            requirement = comps[1]
+            return package, requirement
+    return line, '*'
