@@ -11,6 +11,7 @@ def register_commands(server: PluginServerInterface):
         Literal('!!mpm')
         .then(
             get_literal('list')
+            .runs(lambda src: list_plugins(src))
             .then(
                 Text('labels')
                 .suggests(lambda: ['information', 'tool', 'management', 'api'])
