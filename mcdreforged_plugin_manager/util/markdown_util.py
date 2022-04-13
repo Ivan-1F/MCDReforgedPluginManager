@@ -1,18 +1,18 @@
 import re
-from typing import List
+from typing import List, Any
 
 from mcdreforged.api.all import *
 
 
-def italic(text: str) -> RTextBase:
+def italic(text: Any) -> RTextBase:
     return RText(text).set_styles(RStyle.italic)
 
 
-def bold(text: str) -> RTextBase:
+def bold(text: Any) -> RTextBase:
     return RText(text).set_styles(RStyle.bold)
 
 
-def link(text: str, target: str) -> RTextBase:
+def link(text: Any, target: Any) -> RTextBase:
     return RText(text, RColor.blue) \
         .set_styles([RStyle.underlined]) \
         .c(RAction.open_url, target) \

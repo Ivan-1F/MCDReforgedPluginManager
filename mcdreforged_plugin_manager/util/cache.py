@@ -8,7 +8,7 @@ from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.util.markdown_util import parse_markdown
+from mcdreforged_plugin_manager.util.markdown_util import parse_markdown, italic
 from mcdreforged_plugin_manager.util.translation import tr
 
 
@@ -25,11 +25,12 @@ class MetaInfo(Serializable):
 
     @property
     def formatted_description(self) -> RTextBase:
+        if not self.description:
+            return italic(tr('plugin.no_description'))
         language = psi.get_mcdr_language()
         text = self.description.get(language)
         if text is None:
             text = list(self.description.values())[0]
-        print(text)
         return parse_markdown(text)
 
     @property
