@@ -8,7 +8,7 @@ from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.util.markdown_util import parse_markdown, italic
+from mcdreforged_plugin_manager.util.markdown_util import parse_markdown, italic, link, new_line
 from mcdreforged_plugin_manager.util.translation import tr
 
 
@@ -34,14 +34,25 @@ class MetaInfo(Serializable):
         return parse_markdown(text)
 
     @property
+    def version_text(self):
+        return RText('({}@{})'.format(self.id, self.version), RColor.gray)
+
+    @property
     def brief(self):
         return RTextList(
-            RText('- '),
-            RText(self.name),
-            RText(' ({}@{})'.format(self.id, self.version), RColor.gray),
-            '\n',
-            RText('By ' + ', '.join(self.authors)),
-            '\n',
+            RTextList(
+                '- ',
+                link(RText(self.name), self.repository),
+                ' ',
+                self.version_text
+            ),
+            new_line(),
+            RTextList(
+                tr('plugin.author', ', '.join(self.authors)).set_color(RColor.aqua),
+                ' | ',
+                tr('plugin.label', ', '.join(self.labels)).set_color(RColor.aqua),
+            ),
+            new_line(),
             self.formatted_description
         )
 

@@ -5,3 +5,5 @@ mcdreforged_plugin_manager:
     exception: '插件库索引更新失败: {0}'
   plugin:
     no_description: 无简介
+    author: 作者：{0}
+    label: 标签：{0}

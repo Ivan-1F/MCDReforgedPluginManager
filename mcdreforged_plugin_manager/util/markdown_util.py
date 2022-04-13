@@ -19,6 +19,10 @@ def link(text: Any, target: Any) -> RTextBase:
         .h(target)
 
 
+def new_line() -> RTextBase:
+    return RText('\n')
+
+
 def parse_markdown(text: str) -> RTextList:
     components: List[RTextBase] = []
 
