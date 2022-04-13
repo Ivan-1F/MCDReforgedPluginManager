@@ -14,6 +14,7 @@ mcdreforged_plugin_manager:
     detail:
       dependency: '插件依赖:'
       requirement: 'Python包依赖:'
+      release: '版本:'
   dependency:
     dependency_not_found: 未找到依赖项 {0}
     dependency_not_met: 依赖项 {0} 不满足版本约束 {1}，找到版本 {2}

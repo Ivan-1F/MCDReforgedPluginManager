@@ -1,5 +1,6 @@
 import re
 from typing import List, Any, Optional
+import time as python_time
 
 from mcdreforged.api.all import *
 
@@ -17,6 +18,27 @@ def link(text: Any, target: Any) -> RTextBase:
         .set_styles([RStyle.underlined]) \
         .c(RAction.open_url, target) \
         .h(target)
+
+
+def time(created_at: str, precision: str = 'second') -> str:
+    """
+    :param created_at: The created_at field from github api
+    :param precision: should be 'day' or 'second'
+    """
+    st = python_time.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
+    fmt = '%Y/%m/%d'
+    if precision == 'second':
+        fmt += ' %H:%M:%S'
+    return python_time.strftime(fmt, st)
+
+
+def size(byte: int) -> str:
+    for c in ('B', 'KB', 'MB', 'GB', 'TB'):
+        unit = c
+        if byte < 2 ** 10:
+            break
+        byte /= 2 ** 10
+    return str(round(byte, 2)) + unit
 
 
 def new_line() -> RTextBase:

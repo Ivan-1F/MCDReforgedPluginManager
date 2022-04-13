@@ -1,14 +1,53 @@
 from typing import List, Dict, Optional, Union, Callable
 
+import requests
 from mcdreforged.api.all import *
 
+from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.util.denpendency_util import check_dependency, DependencyNotFound, DependencyNotMet, \
     check_requirement, InvalidDependency
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
 from mcdreforged_plugin_manager.util.text_util import italic, parse_markdown, command_run, link, new_line, \
-    insert_new_lines
+    insert_new_lines, time, size, bold
 from mcdreforged_plugin_manager.util.translation import tr
+
+
+class AssetInfo(Serializable):
+    name: str
+    size: int
+    download_count: int
+    created_at: str
+    browser_download_url: str
+
+
+class ReleaseInfo(Serializable):
+    url: str
+    name: str
+    tag_name: str
+    created_at: str
+    assets: List[AssetInfo]
+    description: str
+    prerelease: bool
+
+    def get_mcdr_assets(self) -> List[AssetInfo]:
+        return [asset for asset in self.assets if asset.name.endswith('.mcdr') or asset.name.endswith('.pyz')]
+
+
+class ReleaseSummary(Serializable):
+    schema_version: int = None
+    id: str
+    latest_version: str
+    etag: str = ''
+    releases: List[ReleaseInfo]
+
+    @classmethod
+    def of(cls, plugin_id: str):
+        try:
+            data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id)).json()
+            return cls.deserialize(data)
+        except requests.RequestException:
+            return None
 
 
 class MetaInfo(Serializable):
@@ -48,7 +87,13 @@ class MetaInfo(Serializable):
     def brief(self):
         return RTextList(
             self.action_bar,
-            '\n',
+            new_line(),
+            self.format
+        )
+
+    @property
+    def format(self):
+        return RTextList(
             RTextList('- ', link(RText(self.name), self.repository), ' ', self.version_text),
             new_line(),
             tr('plugin.author', ', '.join(self.authors)),
@@ -84,21 +129,39 @@ class MetaInfo(Serializable):
         return insert_new_lines(result)
 
     @property
+    def formatted_releases(self):
+        result: List[RTextBase] = []
+        summary = ReleaseSummary.of(self.id)
+        for release in summary.releases:
+            for asset in release.get_mcdr_assets():
+                asset_text = RTextList(
+                    link(asset.name, release.url), ' | ', size(asset.size), ' | ',
+                    command_run(
+                        '[↓]',
+                        '!!mpm install {} {}'.format(self.id, release.tag_name),
+                        tr('plugin.operation.install')
+                    ).set_color(RColor.green)
+                )
+                result.append(asset_text)
+        return insert_new_lines(result)
+
+    @property
     def detail(self):
-        brief = self.brief
+        brief = self.format
         if len(self.dependencies.items()) != 0:
             brief.append(new_line())
-            brief.append(new_line())
-            brief.append(tr('plugin.detail.dependency'))
+            brief.append(bold(tr('plugin.detail.dependency')))
             brief.append(new_line())
             brief.append(self.formatted_dependencies)
         if len(self.requirements) != 0:
             brief.append(new_line())
-            brief.append(new_line())
-            brief.append(tr('plugin.detail.requirement'))
+            brief.append(bold(tr('plugin.detail.requirement')))
             brief.append(new_line())
             brief.append(self.formatted_requirements)
-
+        brief.append(new_line())
+        brief.append(bold(tr('plugin.detail.release')))
+        brief.append(new_line())
+        brief.append(self.formatted_releases)
         return brief
 
     @property

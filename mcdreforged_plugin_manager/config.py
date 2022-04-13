@@ -10,7 +10,11 @@ class Configure(Serializable):
     CONFIG_PATH = os.path.join(psi.get_data_folder(), 'config.yml')
 
     permission: int = PermissionLevel.PHYSICAL_SERVER_CONTROL_LEVEL
-    source: str = 'https://raw.githubusercontent.com/MCDReforged/PluginCatalogue/meta/plugins.json'
+    source: str = 'https://raw.githubusercontent.com/MCDReforged/PluginCatalogue/meta'
+
+    @property
+    def get_source(self):
+        return self.source.rstrip('/')
 
     @classmethod
     def load(cls) -> 'Configure':
