@@ -75,8 +75,8 @@ class MetaInfo(Serializable):
                 item_text.set_color(RColor.green)
                 requirement_text.set_color(RColor.red).h(e)
             else:
-                item_text.set_color(RColor.green)
-                requirement_text.set_color(RColor.green)
+                item_text.set_color(RColor.green).h(tr('dependency.satisfied'))
+                requirement_text.set_color(RColor.green).h(tr('dependency.satisfied'))
             finally:
                 result.append(RTextList(
                     item_text,
