@@ -8,6 +8,7 @@ from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
+from mcdreforged_plugin_manager.util.markdown_util import parse_markdown
 from mcdreforged_plugin_manager.util.translation import tr
 
 
@@ -23,12 +24,13 @@ class MetaInfo(Serializable):
     description: Dict[str, str]
 
     @property
-    def translated_description(self) -> str:
+    def formatted_description(self) -> RTextBase:
         language = psi.get_mcdr_language()
         text = self.description.get(language)
         if text is None:
             text = list(self.description.values())[0]
-        return text
+        print(text)
+        return parse_markdown(text)
 
     @property
     def brief(self):
@@ -39,7 +41,7 @@ class MetaInfo(Serializable):
             '\n',
             RText('By ' + ', '.join(self.authors)),
             '\n',
-            RText(self.translated_description)
+            self.formatted_description
         )
 
 
