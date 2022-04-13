@@ -137,3 +137,6 @@ class PluginMetaInfoStorage(Serializable):
 
     def get_plugin_by_id(self, plugin_id: str):
         return self.plugins.get(plugin_id)
+
+    def get_plugin_ids(self):
+        return self.plugins.keys()
