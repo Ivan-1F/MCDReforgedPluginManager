@@ -3,6 +3,7 @@ from typing import List, Dict, Optional, Union
 from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.constants import psi
+from mcdreforged_plugin_manager.util.denpendency_util import check_dependency, DependencyNotFound, DependencyNotMet
 from mcdreforged_plugin_manager.util.text_util import italic, parse_markdown, command_run, link, new_line
 from mcdreforged_plugin_manager.util.translation import tr
 
@@ -45,12 +46,7 @@ class MetaInfo(Serializable):
         return RTextList(
             self.action_bar,
             '\n',
-            RTextList(
-                '- ',
-                link(RText(self.name), self.repository),
-                ' ',
-                self.version_text
-            ),
+            RTextList('- ', link(RText(self.name), self.repository), ' ', self.version_text),
             new_line(),
             RTextList(
                 tr('plugin.author', ', '.join(self.authors)).set_color(RColor.aqua),
@@ -58,8 +54,35 @@ class MetaInfo(Serializable):
                 tr('plugin.label', ', '.join(self.labels)).set_color(RColor.aqua),
             ),
             new_line(),
-            self.formatted_description
+            self.formatted_description,
+            new_line(),
         )
+
+    @property
+    def formatted_dependencies(self):
+        result = RTextList()
+        for plugin_id, requirement in self.dependencies.items():
+            plugin_id_text = RText(plugin_id)
+            requirement_text = RText(requirement)
+            try:
+                check_dependency(plugin_id, requirement)
+            except DependencyNotFound as e:
+                plugin_id_text.set_color(RColor.red).h(e)
+                requirement_text.set_color(RColor.red).h(e)
+            except DependencyNotMet as e:
+                plugin_id_text.set_color(RColor.green)
+                requirement_text.set_color(RColor.red).h(e)
+            else:
+                plugin_id_text.set_color(RColor.green)
+                requirement_text.set_color(RColor.green)
+            finally:
+                result.append(RTextList(
+                    plugin_id_text,
+                    ' | ',
+                    requirement_text
+                ))
+                result.append(new_line())
+        return result
 
 
 class PluginMetaInfoStorage(Serializable):
