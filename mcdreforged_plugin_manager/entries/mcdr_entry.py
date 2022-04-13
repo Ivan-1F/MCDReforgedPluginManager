@@ -1,9 +1,7 @@
 from mcdreforged.api.all import *
 
-from mcdreforged_plugin_manager.commands import CommandExecutor
+from mcdreforged_plugin_manager.commands import list_plugins
 from mcdreforged_plugin_manager.config import config
-
-command_executor = CommandExecutor()
 
 
 def on_load(server: PluginServerInterface, old):
@@ -15,7 +13,8 @@ def on_load(server: PluginServerInterface, old):
             get_literal('list')
             .then(
                 Text('labels')
-                .runs(lambda src, ctx: command_executor.with_source(src).list_plugins(ctx['labels'].split(',')))
+                .suggests(lambda: ['information', 'tool', 'management', 'api'])
+                .runs(lambda src, ctx: list_plugins(src, ctx['labels'].split(',')))
             )
         )
     )
