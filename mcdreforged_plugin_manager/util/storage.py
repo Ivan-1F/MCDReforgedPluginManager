@@ -9,7 +9,7 @@ from mcdreforged_plugin_manager.util.denpendency_util import check_dependency, D
     check_requirement, InvalidDependency
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
 from mcdreforged_plugin_manager.util.text_util import italic, parse_markdown, command_run, link, new_line, \
-    insert_new_lines, time, size, bold
+    insert_new_lines, size, bold
 from mcdreforged_plugin_manager.util.translation import tr
 
 
