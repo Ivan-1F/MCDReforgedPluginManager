@@ -2,6 +2,7 @@ import functools
 from typing import Optional, Union, List, Callable
 from mcdreforged.api.all import *
 
+from mcdreforged_plugin_manager.installer import PluginInstaller
 from mcdreforged_plugin_manager.util.cache import cache
 from mcdreforged_plugin_manager.util.translation import tr
 
@@ -31,3 +32,9 @@ def search(source: CommandSource, query: str):
 @ensure_plugin_id
 def info(source: CommandSource, plugin_id: str):
     source.reply(cache.get_plugin_by_id(plugin_id).detail)
+
+
+@ensure_plugin_id
+def install(source: CommandSource, plugin_id: str):
+    installer = PluginInstaller(plugin_id, source)
+    installer.install()

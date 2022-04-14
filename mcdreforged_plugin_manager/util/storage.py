@@ -1,12 +1,12 @@
-from typing import List, Dict, Optional, Union, Callable
+from typing import List, Dict, Optional, Union, Callable, Type, TypeVar
 
 import requests
 from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.util.denpendency_util import check_dependency, DependencyNotFound, DependencyNotMet, \
-    check_requirement, InvalidDependency
+from mcdreforged_plugin_manager.dependency_checker import DependencyChecker, DependencyNotFound, InvalidDependency, \
+    DependencyNotMet, PackageDependencyChecker, PluginDependencyChecker
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
 from mcdreforged_plugin_manager.util.text_util import italic, parse_markdown, command_run, link, new_line, \
     insert_new_lines, size, bold
@@ -105,9 +105,11 @@ class MetaInfo(Serializable):
             self.formatted_description,
         )
 
+    T = TypeVar('T', bound=DependencyChecker)
+
     @staticmethod
     def format_dependencies(
-            check: Callable[[str, str], None],
+            checker: Type[T],
             dependencies: Dict[str, str],
             prefix: Optional[Callable[[str, str], RTextBase]] = None
     ):
@@ -116,7 +118,7 @@ class MetaInfo(Serializable):
             item_text = RText(item)
             requirement_text = RText(requirement)
             try:
-                check(item, requirement)
+                checker(item, requirement).check()
             except (DependencyNotFound, InvalidDependency) as e:
                 item_text.set_color(RColor.red).h(e)
                 requirement_text.set_color(RColor.red).h(e)
@@ -174,12 +176,18 @@ class MetaInfo(Serializable):
         brief.append(self.formatted_releases)
         return brief
 
+    def is_installed(self):
+        return self.id in psi.get_plugin_list()
+
+    def should_update(self):
+        return self.is_installed() and psi.get_plugin_metadata(self.id).version < self.version
+
     @property
     def formatted_requirements(self):
         requirements = {parse_python_requirement(requirement)[0]: parse_python_requirement(requirement)[1]
                         for requirement in self.requirements}
         return self.format_dependencies(
-            check_requirement,
+            PackageDependencyChecker,
             requirements,
             lambda package, requirement: link('- ', 'https://pypi.org/project/' + package).set_styles([])
         )
@@ -187,7 +195,7 @@ class MetaInfo(Serializable):
     @property
     def formatted_dependencies(self):
         return self.format_dependencies(
-            check_dependency,
+            PluginDependencyChecker,
             self.dependencies,
             lambda plugin_id, requirement: command_run('- ', '!!mpm info {}'.format(plugin_id),
                                                        tr('plugin.operation.show_info'))
