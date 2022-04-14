@@ -46,12 +46,13 @@ class Cache(PluginMetaInfoStorage):
     @classmethod
     def load(cls):
         if not os.path.isfile(cls.CACHE_PATH):
-            return cls()
-        with open(cls.CACHE_PATH, 'r') as f:
-            data = json.load(f)
-            obj = cls.deserialize(data)
-            obj.cache()
-            return obj
+            obj = cls()
+        else:
+            with open(cls.CACHE_PATH, 'r') as f:
+                data = json.load(f)
+                obj = cls.deserialize(data)
+        obj.cache()
+        return obj
 
 
 cache = Cache.load()
