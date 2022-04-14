@@ -61,7 +61,6 @@ class MetaInfo(Serializable):
     dependencies: Dict[str, str]
     requirements: List[str]
     description: Dict[str, str]
-    release_summary: Optional[ReleaseSummary]
 
     @property
     def formatted_description(self) -> RTextBase:
@@ -131,7 +130,7 @@ class MetaInfo(Serializable):
         return insert_new_lines(result)
 
     def get_release_summary(self):
-        return ReleaseSummary.of(self.id) if self.release_summary is None else self.release_summary
+        return ReleaseSummary.of(self.id)
 
     @property
     def formatted_releases(self):

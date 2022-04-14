@@ -6,17 +6,11 @@ from ruamel.yaml import YAML
 from mcdreforged_plugin_manager.constants import psi
 
 
-class CacheReleaseConfig(Serializable):
-    enabled: bool = False
-    show_log: bool = False
-
-
 class Configure(Serializable):
     CONFIG_PATH = os.path.join(psi.get_data_folder(), 'config.yml')
 
     permission: int = PermissionLevel.PHYSICAL_SERVER_CONTROL_LEVEL
     source: str = 'https://raw.githubusercontent.com/MCDReforged/PluginCatalogue/meta'
-    cache_releases: CacheReleaseConfig = CacheReleaseConfig(enabled=False, show_log=False)
     timeout: int = 15
     cache_interval: int = 30
 
