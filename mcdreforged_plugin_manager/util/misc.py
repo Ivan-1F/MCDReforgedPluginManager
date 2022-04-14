@@ -2,8 +2,6 @@ import importlib
 import re
 from typing import Tuple
 
-from mcdreforged.api.all import *
-
 
 def get_package_version(package_name: str):
     try:
