@@ -10,8 +10,8 @@ mcdreforged_plugin_manager:
       exception: '{0} 的版本索引更新失败: {1}'
   plugin:
     no_description: 无简介
-    author: '作者: {0}'
-    label: '标签: {0}'
+    author: '§l作者: §r{0}'
+    label: '§l标签: §r{0}'
     not_found: §c未找到插件 {0}
     operation:
       install: 安装

@@ -95,7 +95,7 @@ class MetaInfo(Serializable):
     @property
     def format(self):
         return RTextList(
-            RTextList('- ', link(RText(self.name), self.repository), ' ', self.version_text),
+            RTextList(link(RText(self.name), self.repository), ' ', self.version_text),
             new_line(),
             tr('plugin.author', ', '.join(self.authors)),
             new_line(),
@@ -139,6 +139,7 @@ class MetaInfo(Serializable):
             for asset in release.get_mcdr_assets():
                 asset_text = RTextList(
                     link(asset.name, release.url), ' | ', size(asset.size), ' | ',
+                    release.tag_name, ' | ',
                     command_run(
                         '[↓]',
                         '!!mpm install {} {}'.format(self.id, release.tag_name),
