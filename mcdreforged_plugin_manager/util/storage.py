@@ -44,7 +44,8 @@ class ReleaseSummary(Serializable):
     @classmethod
     def of(cls, plugin_id: str):
         try:
-            data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id), timeout=config.timeout).json()
+            data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id),
+                                timeout=config.timeout).json()
             return cls.deserialize(data)
         except requests.RequestException as e:
             psi.logger.warning(tr('cache.release.exception', plugin_id, e))
@@ -105,7 +106,11 @@ class MetaInfo(Serializable):
         )
 
     @staticmethod
-    def format_dependencies(check: Callable[[str, str], None], dependencies: Dict[str, str]):
+    def format_dependencies(
+            check: Callable[[str, str], None],
+            dependencies: Dict[str, str],
+            prefix: Optional[Callable[[str, str], RTextBase]] = None
+    ):
         result: List[RTextBase] = []
         for item, requirement in dependencies.items():
             item_text = RText(item)
@@ -123,6 +128,7 @@ class MetaInfo(Serializable):
                 requirement_text.set_color(RColor.green).h(tr('dependency.satisfied'))
             finally:
                 result.append(RTextList(
+                    prefix(item, requirement),
                     item_text,
                     ' | ',
                     requirement_text
@@ -172,11 +178,20 @@ class MetaInfo(Serializable):
     def formatted_requirements(self):
         requirements = {parse_python_requirement(requirement)[0]: parse_python_requirement(requirement)[1]
                         for requirement in self.requirements}
-        return self.format_dependencies(check_requirement, requirements)
+        return self.format_dependencies(
+            check_requirement,
+            requirements,
+            lambda package, requirement: link('- ', 'https://pypi.org/project/' + package).set_styles([])
+        )
 
     @property
     def formatted_dependencies(self):
-        return self.format_dependencies(check_dependency, self.dependencies)
+        return self.format_dependencies(
+            check_dependency,
+            self.dependencies,
+            lambda plugin_id, requirement: command_run('- ', '!!mpm info {}'.format(plugin_id),
+                                                       tr('plugin.operation.show_info'))
+        )
 
 
 class PluginMetaInfoStorage(Serializable):
