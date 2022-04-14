@@ -29,8 +29,13 @@ def parse_python_requirement(line: str) -> Tuple[str, str]:
     requirement = line.lstrip(package)
     if requirement == '':
         requirement = '*'
+    else:
+        if any([operator in requirement for operator in ['~=', '^=']]):
+            # ~= -> ~, ^= -> ^
+            requirement = requirement.replace('=', '')
     return package, requirement
 
 
 if __name__ == '__main__':
     print(parse_python_requirement('mcdreforged>=2.0.1'))
+    print(parse_python_requirement('mcdreforged~=2.0.1'))
