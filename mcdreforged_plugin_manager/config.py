@@ -18,6 +18,7 @@ class Configure(Serializable):
     source: str = 'https://raw.githubusercontent.com/MCDReforged/PluginCatalogue/meta'
     cache_releases: CacheReleaseConfig = CacheReleaseConfig(enabled=False, show_log=False)
     timeout: int = 15
+    cache_interval: int = 30
 
     @property
     def get_source(self):

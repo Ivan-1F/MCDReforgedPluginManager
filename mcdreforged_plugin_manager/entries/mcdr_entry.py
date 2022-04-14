@@ -2,7 +2,7 @@ from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.commands import list_plugins, search, info
 from mcdreforged_plugin_manager.config import config
-from mcdreforged_plugin_manager.util.cache import cache
+from mcdreforged_plugin_manager.util.cache import cache, cache_clock
 
 
 def register_commands(server: PluginServerInterface):
@@ -38,4 +38,13 @@ def register_commands(server: PluginServerInterface):
 
 
 def on_load(server: PluginServerInterface, old):
+    if hasattr(old, 'clock'):
+        cache_clock.last_update_time = old.cache_clock.last_update_time
+    cache_clock.start()
+    cache.cache()
+    cache_clock.reset_timer()
     register_commands(server)
+
+
+def on_unload(server: PluginServerInterface):
+    cache_clock.stop()

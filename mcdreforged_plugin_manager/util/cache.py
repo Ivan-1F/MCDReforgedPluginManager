@@ -1,6 +1,8 @@
 import json
 import os
-import traceback
+import time
+from threading import Thread, Event
+from typing import Callable
 
 import requests
 from mcdreforged.api.all import *
@@ -11,13 +13,40 @@ from mcdreforged_plugin_manager.util.storage import PluginMetaInfoStorage, Relea
 from mcdreforged_plugin_manager.util.translation import tr
 
 
+class CacheClock(Thread):
+    def __init__(self, interval: int, event: Callable) -> None:
+        super().__init__()
+        self.setDaemon(True)
+        self.setName(self.__class__.__name__)
+        self.interval = interval
+        self.event = event
+        self.last_update_time = time.time()
+        self.__stop_event = Event()
+        self.__stop_flag = False
+
+    def reset_timer(self):
+        self.last_update_time = time.time()
+
+    def run(self):
+        psi.logger.info(tr('cache.clock.started', self.interval))
+        while True:
+            while True:
+                if self.__stop_event.wait(1):
+                    return
+                if time.time() - self.last_update_time > self.interval:
+                    break
+            self.event()
+            self.reset_timer()
+
+    def stop(self):
+        self.__stop_event.set()
+
+
 class Cache(PluginMetaInfoStorage):
     CACHE_PATH = os.path.join(psi.get_data_folder(), 'cache.json')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        if traceback.extract_stack()[-2][2] == 'load':  # only cache when initializing by Cache#load
-            self.cache()
 
     @new_thread('mpm-cache')
     def cache(self):
@@ -51,8 +80,8 @@ class Cache(PluginMetaInfoStorage):
             with open(cls.CACHE_PATH, 'r') as f:
                 data = json.load(f)
                 obj = cls.deserialize(data)
-        obj.cache()
         return obj
 
 
 cache = Cache.load()
+cache_clock = CacheClock(config.cache_interval * 60, event=cache.cache)
