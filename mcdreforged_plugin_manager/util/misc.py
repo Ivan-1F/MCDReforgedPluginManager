@@ -1,4 +1,5 @@
 import importlib
+import re
 from typing import Tuple
 
 from mcdreforged.api.all import *
@@ -16,14 +17,19 @@ def get_package_version(package_name: str):
         return None
 
 
+class RequirementParsingError(Exception):
+    pass
+
+
 def parse_python_requirement(line: str) -> Tuple[str, str]:
-    for criterion in VersionRequirement.CRITERIONS.keys():
-        comps = line.rsplit(criterion, 1)
-        if len(comps) == 2:
-            package = comps[0]
-            requirement = criterion + comps[1]
-            return package, requirement
-    return line, '*'
+    matched = re.match(r'^[^<>=~^]+', line)
+    if matched is None:
+        raise RequirementParsingError
+    package = matched.group()
+    requirement = line.lstrip(package)
+    if requirement == '':
+        requirement = '*'
+    return package, requirement
 
 
 if __name__ == '__main__':
