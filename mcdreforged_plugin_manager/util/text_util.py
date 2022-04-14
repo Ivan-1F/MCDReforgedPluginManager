@@ -1,5 +1,5 @@
 import re
-from typing import List, Any, Optional
+from typing import List, Any, Optional, Union
 import time as python_time
 
 from mcdreforged.api.all import *
@@ -45,12 +45,18 @@ def new_line() -> RTextBase:
     return RText('\n')
 
 
-def insert_new_lines(texts: List[RTextBase]) -> RTextBase:
+def insert_new_lines(texts: Union[List[RTextBase], RTextList]) -> RTextBase:
+    return insert_between(texts, new_line())
+
+
+def insert_between(texts: Union[List[RTextBase], RTextList], insertion: RTextBase) -> RTextBase:
     result = RTextList()
+    if isinstance(texts, RTextList):
+        texts = texts.children
     for index, text in enumerate(texts):
         result.append(text)
         if index != len(texts) - 1:
-            result.append(new_line())
+            result.append(insertion)
     return result
 
 

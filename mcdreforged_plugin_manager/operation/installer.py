@@ -4,9 +4,10 @@ from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.dependency_checker import PluginDependencyChecker, PackageDependencyChecker, \
     DependencyError, DependencyOperation
+from mcdreforged_plugin_manager.operation.task_manager import Task
 from mcdreforged_plugin_manager.util.cache import cache
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
-from mcdreforged_plugin_manager.util.text_util import command_run
+from mcdreforged_plugin_manager.util.text_util import command_run, insert_between
 from mcdreforged_plugin_manager.util.translation import tr
 
 Operation = Tuple[str, DependencyOperation]
@@ -44,11 +45,12 @@ def get_operate_dependencies(plugin_id: str):
     return plugins, packages
 
 
-class PluginInstaller:
+class PluginInstaller(Task):
     def __init__(self, plugin_id: str, source: CommandSource):
         self.meta = cache.get_plugin_by_id(plugin_id)
         self.reply = source.reply
         self.server = source.get_server()
+        super().__init__()
 
     def is_installed(self):
         return self.meta.is_installed()
@@ -61,19 +63,23 @@ class PluginInstaller:
             operate_plugins, operate_packages = self.get_operate_dependencies()
             if len(operate_plugins) > 0:
                 self.reply(tr('installer.confirm.plugin_list'))
-                self.reply(', '.join([RText(name).set_color(
+                self.reply(insert_between([RText(name).set_color(
                     RColor.dark_aqua if op == DependencyOperation.INSTALL else RColor.aqua
-                ).to_colored_text() for name, op in operate_plugins]))
+                ) for name, op in operate_plugins], insertion=RText(', ')))
             if len(operate_packages) > 0:
                 self.reply(tr('installer.confirm.package_list'))
-                self.reply(', '.join([RText(name).set_color(
+                self.reply(insert_between([RText(name).set_color(
                     RColor.dark_aqua if op == DependencyOperation.INSTALL else RColor.aqua
-                ).to_colored_text() for name, op in operate_packages]))
+                ) for name, op in operate_packages], insertion=RText(', ')))
 
-            self.reply(tr('installer.confirm.footer', command_run('!!mpm confirm', '!!mpm confirm')))
+            self.reply(tr('installer.confirm.footer', command_run('!!mpm confirm', '!!mpm confirm', tr('installer.confirm.command_hover'))))
 
     def get_operate_dependencies(self):
         return get_operate_dependencies(self.meta.id)
 
-    def install(self):
+    def run(self):
+        self.reply('run with ' + str(self.get_operate_dependencies()))
+        pass
+
+    def init(self):
         self.show_confirm()

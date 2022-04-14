@@ -2,7 +2,8 @@ import functools
 from typing import Optional, Union, List, Callable
 from mcdreforged.api.all import *
 
-from mcdreforged_plugin_manager.installer import PluginInstaller
+from mcdreforged_plugin_manager.operation.installer import PluginInstaller
+from mcdreforged_plugin_manager.operation.task_manager import task_manager
 from mcdreforged_plugin_manager.util.cache import cache
 from mcdreforged_plugin_manager.util.translation import tr
 
@@ -37,4 +38,4 @@ def info(source: CommandSource, plugin_id: str):
 @ensure_plugin_id
 def install(source: CommandSource, plugin_id: str):
     installer = PluginInstaller(plugin_id, source)
-    installer.install()
+    task_manager.manage_task(installer)

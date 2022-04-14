@@ -2,6 +2,7 @@ from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.commands import list_plugins, search, info, install
 from mcdreforged_plugin_manager.config import config
+from mcdreforged_plugin_manager.operation.task_manager import task_manager
 from mcdreforged_plugin_manager.util.cache import cache, cache_clock
 
 
@@ -41,6 +42,10 @@ def register_commands(server: PluginServerInterface):
                 .suggests(cache.get_plugin_ids)
                 .runs(lambda src, ctx: install(src, ctx['plugin_id']))
             )
+        )
+        .then(
+            get_literal('confirm')
+            .runs(task_manager.on_confirm)
         )
     )
 
