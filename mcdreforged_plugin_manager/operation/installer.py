@@ -85,7 +85,7 @@ class PluginInstaller(Task):
     def get_installed_plugin_file(self, plugin_id: str):
         return self.server.get_plugin_file_path(plugin_id)
 
-    def run(self):
+    def _run(self):
         for plugin, op in self.operate_plugins:
             if op == DependencyOperation.INSTALL:
                 release = ReleaseSummary.of(plugin).get_latest_release()

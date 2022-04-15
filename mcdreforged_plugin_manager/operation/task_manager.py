@@ -18,7 +18,7 @@ class Task(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def run(self):
+    def _run(self):
         """
         Run the task, called after executing !!mpm confirm
         """
@@ -36,7 +36,7 @@ class TaskManager:
         if self.pending_task is None:
             source.reply(tr('task_manager.nothing_to_confirm'))
         else:
-            self.pending_task.run()
+            self.pending_task._run()
             self.pending_task = None
 
 
