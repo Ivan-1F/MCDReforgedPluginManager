@@ -1,7 +1,6 @@
 import os
 from abc import ABC, abstractmethod
 from typing import List
-from urllib.request import urlretrieve
 
 import requests
 from mcdreforged.api.all import *
