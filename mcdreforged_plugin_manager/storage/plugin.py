@@ -185,7 +185,7 @@ class PluginMetaInfoStorage(Serializable):
 
     def search(self, query: str) -> Iterable[MetaInfo]:
         for plugin in self.plugins.values():
-            if query in plugin.name or query in plugin.id:
+            if query in plugin.name or query in plugin.id or query in plugin.description:
                 yield plugin
 
     def is_plugin_present(self, plugin_id: str) -> bool:
