@@ -2,6 +2,7 @@ from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.commands import list_plugins, search, info, install, upgrade
 from mcdreforged_plugin_manager.config import config
+from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.operation.task_manager import task_manager
 from mcdreforged_plugin_manager.util.cache import cache, cache_clock
 
@@ -48,7 +49,7 @@ def register_commands(server: PluginServerInterface):
             .then(
                 Text('plugin_id')
                 # TODO: suggests installed plugins only
-                .suggests(cache.get_plugin_ids)
+                .suggests(psi.get_plugin_list)
                 .runs(lambda src, ctx: upgrade(src, ctx['plugin_id']))
             )
         )
