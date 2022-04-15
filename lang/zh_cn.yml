@@ -45,7 +45,8 @@ mcdreforged_plugin_manager:
         removing: 正在删除 §6{0}
         exception: '§c发生异常: {0}'
       package:
-        operating_with_api: 正在通过 pip {0} §6{1}
+        operating_with_pip: 正在通过 pip {0} §6{1}
+        exception: '§c发生异常: {0}'
     result:
       success: §a操作成功
       failed: §c操作失败

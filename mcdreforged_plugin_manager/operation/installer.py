@@ -1,4 +1,6 @@
 import os
+import subprocess
+import sys
 from abc import ABC, abstractmethod
 from typing import List
 
@@ -75,11 +77,20 @@ class InstallerPackageOperation(InstallerOperation):
         installer.reply(indented(
             tr('installer.operation.package.operating_with_pip', tr(self.operation.value), self.name))
         )
+        params = []
         if self.operation == DependencyOperation.INSTALL:
-            pass
+            params = [sys.executable, '-m', 'pip', 'install', self.name]
         elif self.operation == DependencyOperation.UPGRADE:
-            pass
-        return True
+            params = [sys.executable, '-m', 'pip', 'install', '-U', self.name]
+        try:
+            subprocess.check_call(params)
+        except subprocess.CalledProcessError as e:
+            installer.reply(indented(
+                tr('installer.operation.package.exception', e), 2
+            ))
+            return False
+        else:
+            return True
 
 
 def get_operate_packages(requirements: List[str]):
