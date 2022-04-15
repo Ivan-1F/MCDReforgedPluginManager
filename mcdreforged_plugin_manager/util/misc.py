@@ -1,9 +1,9 @@
 import importlib
 import re
-from typing import Tuple
+from typing import Tuple, Optional
 
 
-def get_package_version(package_name: str):
+def get_package_version(package_name: str) -> Optional[str]:
     try:
         module = importlib.import_module(package_name)
 

@@ -3,7 +3,7 @@ import os
 from mcdreforged_plugin_manager.constants import psi
 
 
-def is_plugin_loaded(plugin_id: str):
+def is_plugin_loaded(plugin_id: str) -> bool:
     return plugin_id in psi.get_plugin_list()
 
 

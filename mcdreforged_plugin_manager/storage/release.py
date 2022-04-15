@@ -40,7 +40,7 @@ class ReleaseSummary(Serializable):
         return None
 
     @classmethod
-    def of(cls, plugin_id: str):
+    def of(cls, plugin_id: str) -> 'ReleaseSummary':
         data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id),
                             timeout=config.timeout).json()
         return cls.deserialize(data)

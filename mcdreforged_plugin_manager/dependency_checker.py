@@ -1,4 +1,5 @@
-from enum import auto, Enum
+from abc import ABC, abstractmethod
+from enum import Enum
 
 from mcdreforged.plugin.meta.version import VersionRequirement, VersionParsingError
 
@@ -30,7 +31,7 @@ class DependencyOperation(Enum):
     UPGRADE = 'dependency.operation.upgrade'
 
 
-class DependencyChecker:
+class DependencyChecker(ABC):
     def __init__(self, name: str, requirement: str):
         self.name = name
         self.requirement = requirement
@@ -42,10 +43,11 @@ class DependencyChecker:
         except VersionParsingError as e:
             raise InvalidDependency(tr('dependency.invalid_dependency', self.name, e))
 
+    @abstractmethod
     def check(self):
         pass
 
-    def get_operation(self):
+    def get_operation(self) -> DependencyOperation:
         try:
             self.check()
         except DependencyNotFound:

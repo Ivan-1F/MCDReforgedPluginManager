@@ -93,7 +93,7 @@ class InstallerPackageOperation(InstallerOperation):
             return True
 
 
-def get_operate_packages(requirements: List[str]):
+def get_operate_packages(requirements: List[str]) -> List[InstallerPackageOperation]:
     """
     Get a list of operations from raw requirement list
     """
@@ -109,7 +109,7 @@ def get_operate_packages(requirements: List[str]):
     return result
 
 
-def get_operations(plugin_id: str, self_operation: DependencyOperation):
+def get_operations(plugin_id: str, self_operation: DependencyOperation) -> List[InstallerOperation]:
     operations: List[InstallerOperation] = []
     plugin = cache.get_plugin_by_id(plugin_id)
     operations.append(InstallerPluginOperation(plugin_id, self_operation))
@@ -139,7 +139,7 @@ class PluginInstaller(Task):
     def __add_operation(self, operation: InstallerOperation):
         self.operations.append(operation)
 
-    def __init_operations(self):
+    def __init_operations(self) -> bool:
         if is_plugin_loaded(self.plugin_id):
             if not self.upgrade:
                 self.reply(tr('installer.already_installed', self.plugin_id))
@@ -160,7 +160,7 @@ class PluginInstaller(Task):
                                          DependencyOperation.UPGRADE if self.upgrade else DependencyOperation.INSTALL)
         return True
 
-    def __format_plugins_confirm(self):
+    def __format_plugins_confirm(self) -> Optional[RTextBase]:
         ops = [op for op in self.operations if isinstance(op, InstallerPluginOperation)]
         if len(ops) == 0:
             return None
@@ -172,7 +172,7 @@ class PluginInstaller(Task):
             ) for op in ops], insertion=RText(', '))
         )
 
-    def __format_packages_confirm(self):
+    def __format_packages_confirm(self) -> Optional[RTextBase]:
         ops = [op for op in self.operations if isinstance(op, InstallerPackageOperation)]
         if len(ops) == 0:
             return None

@@ -16,7 +16,7 @@ class Configure(Serializable):
     check_update: bool = True
 
     @property
-    def get_source(self):
+    def get_source(self) -> str:
         return self.source.rstrip('/')
 
     @classmethod
@@ -36,4 +36,4 @@ class Configure(Serializable):
             YAML().dump(self.serialize(), f)
 
 
-config: Configure = Configure.load()
+config = Configure.load()

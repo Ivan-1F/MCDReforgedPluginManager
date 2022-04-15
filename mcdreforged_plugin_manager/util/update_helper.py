@@ -1,14 +1,14 @@
-from typing import Callable, Any
+from typing import Callable, Any, Iterator
 
 from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.storage.cache import cache
-from mcdreforged_plugin_manager.util.text_util import command_run, new_line
+from mcdreforged_plugin_manager.util.text_util import command_run
 from mcdreforged_plugin_manager.util.translation import tr
 
 
-def get_all_update_plugins():
+def get_all_update_plugins() -> Iterator[str]:
     for plugin_id in psi.get_plugin_list():
         plugin = cache.get_plugin_by_id(plugin_id)
         if plugin is None:

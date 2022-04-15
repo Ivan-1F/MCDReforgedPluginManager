@@ -1,4 +1,4 @@
-from typing import List, Dict, Optional, Union, Callable, Type, TypeVar
+from typing import List, Dict, Optional, Union, Callable, Type, TypeVar, Tuple, Iterable
 
 import requests
 from mcdreforged.api.all import *
@@ -36,11 +36,11 @@ class MetaInfo(Serializable):
         return parse_markdown(text)
 
     @property
-    def version_text(self):
+    def version_text(self) -> RTextBase:
         return RText('({}@{})'.format(self.id, self.version), RColor.gray)
 
     @property
-    def action_bar(self):
+    def action_bar(self) -> RTextList:
         return RTextList(
             command_run('[↓]', '!!mpm install {}'.format(self.id), tr('plugin.operation.install')).set_color(
                 RColor.green),
@@ -48,7 +48,7 @@ class MetaInfo(Serializable):
         )
 
     @property
-    def brief(self):
+    def brief(self) -> RTextList:
         return RTextList(
             self.action_bar,
             new_line(),
@@ -56,7 +56,7 @@ class MetaInfo(Serializable):
         )
 
     @property
-    def format(self):
+    def format(self) -> RTextList:
         return RTextList(
             RTextList(link(RText(self.name), self.repository), ' ', self.version_text),
             new_line(),
@@ -74,7 +74,7 @@ class MetaInfo(Serializable):
             checker: Type[T],
             dependencies: Dict[str, str],
             prefix: Optional[Callable[[str, str], RTextBase]] = None
-    ):
+    ) -> RTextBase:
         result: List[RTextBase] = []
         for item, requirement in dependencies.items():
             item_text = RText(item)
@@ -99,11 +99,11 @@ class MetaInfo(Serializable):
                 ))
         return insert_new_lines(result)
 
-    def get_release_summary(self):
+    def get_release_summary(self) -> ReleaseSummary:
         return ReleaseSummary.of(self.id)
 
     @property
-    def formatted_releases(self):
+    def formatted_releases(self) -> RTextBase:
         result: List[RTextBase] = []
         try:
             summary = self.get_release_summary()
@@ -124,7 +124,7 @@ class MetaInfo(Serializable):
         return insert_new_lines(result)
 
     @property
-    def detail(self):
+    def detail(self) -> RTextBase:
         brief = self.format
         if len(self.dependencies.items()) != 0:
             brief.append(new_line())
@@ -143,7 +143,7 @@ class MetaInfo(Serializable):
         return brief
 
     @property
-    def formatted_requirements(self):
+    def formatted_requirements(self) -> RTextBase:
         requirements = {parse_python_requirement(requirement)[0]: parse_python_requirement(requirement)[1]
                         for requirement in self.requirements}
         return self.format_dependencies(
@@ -153,7 +153,7 @@ class MetaInfo(Serializable):
         )
 
     @property
-    def formatted_dependencies(self):
+    def formatted_dependencies(self) -> RTextBase:
         return self.format_dependencies(
             PluginDependencyChecker,
             self.dependencies,
@@ -161,7 +161,7 @@ class MetaInfo(Serializable):
                                                        tr('plugin.operation.show_info'))
         )
 
-    def check_update(self):
+    def check_update(self) -> Tuple[bool, Optional[Version], Optional[Version]]:
         if is_plugin_loaded(self.id):
             local_version = psi.get_plugin_metadata(self.id).version
             latest_version = Version(self.version)
@@ -174,7 +174,7 @@ class PluginMetaInfoStorage(Serializable):
     plugin_amount: int = 0
     plugins: Dict[str, MetaInfo] = {}  # plugin id -> plugin meta
 
-    def get_plugins_by_labels(self, labels: Optional[Union[type(None), str, List[str]]] = None):
+    def get_plugins_by_labels(self, labels: Optional[Union[type(None), str, List[str]]] = None) -> Iterable[MetaInfo]:
         if labels is None:
             labels = ['information', 'tool', 'management', 'api']
         if isinstance(labels, str):
@@ -183,16 +183,16 @@ class PluginMetaInfoStorage(Serializable):
             if any([label in labels for label in plugin.labels]):
                 yield plugin
 
-    def search(self, query: str):
+    def search(self, query: str) -> Iterable[MetaInfo]:
         for plugin in self.plugins.values():
             if query in plugin.name or query in plugin.id:
                 yield plugin
 
-    def is_plugin_present(self, plugin_id: str):
+    def is_plugin_present(self, plugin_id: str) -> bool:
         return plugin_id in self.plugins.keys()
 
-    def get_plugin_by_id(self, plugin_id: str):
+    def get_plugin_by_id(self, plugin_id: str) -> MetaInfo:
         return self.plugins.get(plugin_id)
 
-    def get_plugin_ids(self):
-        return self.plugins.keys()
+    def get_plugin_ids(self) -> List[str]:
+        return list(self.plugins.keys())

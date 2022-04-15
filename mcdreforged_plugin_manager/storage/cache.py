@@ -68,7 +68,7 @@ class Cache(PluginMetaInfoStorage):
             json.dump(self.serialize(), f, indent=4, ensure_ascii=False)
 
     @classmethod
-    def load(cls):
+    def load(cls) -> 'Cache':
         if not os.path.isfile(cls.CACHE_PATH):
             obj = cls()
         else:

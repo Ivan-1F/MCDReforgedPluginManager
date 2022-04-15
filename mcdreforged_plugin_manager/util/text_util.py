@@ -5,16 +5,23 @@ import time as python_time
 from mcdreforged.api.all import *
 
 
+def get_text(text: Any) -> RTextBase:
+    if isinstance(text, RTextBase):
+        return text.copy()
+    return RText(text)
+
+
 def italic(text: Any) -> RTextBase:
-    return RText(text).set_styles(RStyle.italic)
+    return get_text(text).set_styles(RStyle.italic)
 
 
 def bold(text: Any) -> RTextBase:
-    return RText(text).set_styles(RStyle.bold)
+    return get_text(text).set_styles(RStyle.bold)
 
 
 def link(text: Any, target: Any) -> RTextBase:
-    return RText(text, RColor.aqua) \
+    return get_text(text) \
+        .set_color(RColor.aqua) \
         .set_styles([RStyle.underlined]) \
         .c(RAction.open_url, target) \
         .h(target)
@@ -64,7 +71,7 @@ def insert_between(texts: Union[List[RTextBase], RTextList], insertion: RTextBas
     return result
 
 
-def command_run(message: Any, command: str, text: Optional[Any] = None):
+def command_run(message: Any, command: str, text: Optional[Any] = None) -> RTextBase:
     fancy_text = message.copy() if isinstance(message, RTextBase) else RText(message)
     return fancy_text.set_hover_text(text).set_click_event(RAction.run_command, command)
 

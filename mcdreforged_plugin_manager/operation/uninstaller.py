@@ -1,4 +1,5 @@
 import os
+from typing import Iterable
 
 from mcdreforged.api.all import *
 
@@ -10,7 +11,7 @@ from mcdreforged_plugin_manager.util.mcdr_util import unload_plugin
 from mcdreforged_plugin_manager.util.translation import tr
 
 
-def get_plugins_depend_on(plugin_id: str):
+def get_plugins_depend_on(plugin_id: str) -> Iterable[str]:
     for other_id in psi.get_plugin_list():
         try:
             other = cache.get_plugin_by_id(other_id)
