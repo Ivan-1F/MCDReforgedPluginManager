@@ -10,7 +10,7 @@ from mcdreforged_plugin_manager.operation.task_manager import Task
 from mcdreforged_plugin_manager.util.cache import cache
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
 from mcdreforged_plugin_manager.util.storage import ReleaseSummary
-from mcdreforged_plugin_manager.util.text_util import new_line, insert_between, command_run
+from mcdreforged_plugin_manager.util.text_util import new_line, insert_between, command_run, indented
 from mcdreforged_plugin_manager.util.translation import tr
 
 
@@ -37,8 +37,7 @@ class InstallerPluginOperation(InstallerOperation):
             url = asset.browser_download_url
             filename = asset.name
             # installer.reply(tr('installer.operation.plugin.downloading', filename))
-            installer.reply(RTextList(
-                '   ',
+            installer.reply(indented(
                 tr('installer.operation.plugin.downloading', filename)
             ))
             urlretrieve(url, './plugins/' + release.get_mcdr_assets()[0].name)
@@ -54,10 +53,9 @@ class InstallerPackageOperation(InstallerOperation):
         self.name = name
 
     def operate(self, installer: 'PluginInstaller') -> bool:
-        installer.reply(RTextList(
-            '   ',
-            tr('installer.operation.package.operating_with_pip', tr(self.operation.value), self.name)
-        ))
+        installer.reply(indented(
+            tr('installer.operation.package.operating_with_pip', tr(self.operation.value), self.name))
+        )
         if self.operation == DependencyOperation.INSTALL:
             pass
         elif self.operation == DependencyOperation.UPGRADE:
@@ -85,7 +83,6 @@ def get_operations(plugin_id: str):
     operations: List[InstallerOperation] = []
     plugin = cache.get_plugin_by_id(plugin_id)
     operations.append(InstallerPluginOperation(plugin_id, DependencyOperation.INSTALL))
-    print('append', plugin_id)
     operations = [*operations, *get_operate_packages(plugin.requirements)]
 
     for dep_id, requirement in plugin.dependencies.items():

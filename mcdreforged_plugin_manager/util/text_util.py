@@ -41,6 +41,10 @@ def size(byte: int) -> str:
     return str(round(byte, 2)) + unit
 
 
+def indented(text: RTextBase):
+    return RTextList('  ', text)
+
+
 def new_line() -> RTextBase:
     return RText('\n')
 
