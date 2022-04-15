@@ -25,6 +25,9 @@ mcdreforged_plugin_manager:
     dependency_not_met: 依赖项 {0} 不满足版本约束 {1}，找到版本 {2}
     invalid_dependency: '无效的依赖项 {0}: {1}'
     satisfied: 依赖项满足
+    operation:
+      install: §3安装§r
+      update: §b更新§r
 
   installer:
     already_installed: 插件 {0} 已安装
@@ -34,11 +37,16 @@ mcdreforged_plugin_manager:
       package_list: '§l将§3安装§r或§b更新§r以下包:'
       footer: 请使用 §6{0}§r 确认操作
       command_hover: 确认
-    install:
-      downloading: 正在下载 §6{0}
-      pip:
-        install: 正在安装 §6{0}
-        error: '安装包时发生错误: {0}'
+    operating: 正在 {0} {1}
+    operation:
+      plugin:
+        downloading: 正在下载 §6{0}
+        deleting: 正在删除 §6{0}
+      package:
+        operating_with_api: 正在通过 pip {0} §6{1}
+    result:
+      success: §a安装成功
+      failed: §c安装失败
 
   task_manager:
     nothing_to_confirm: §c没有什么需要确认的

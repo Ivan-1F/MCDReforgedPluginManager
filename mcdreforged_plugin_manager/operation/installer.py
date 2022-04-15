@@ -1,110 +1,161 @@
-import subprocess
-import sys
-from typing import List, Tuple
+from abc import ABC, abstractmethod
+from typing import List, Any
 from urllib.request import urlretrieve
 
 from mcdreforged.api.all import *
 
-from mcdreforged_plugin_manager.dependency_checker import PluginDependencyChecker, PackageDependencyChecker, \
-    DependencyError, DependencyOperation
+from mcdreforged_plugin_manager.dependency_checker import DependencyOperation, PackageDependencyChecker, \
+    DependencyError, PluginDependencyChecker
 from mcdreforged_plugin_manager.operation.task_manager import Task
 from mcdreforged_plugin_manager.util.cache import cache
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
 from mcdreforged_plugin_manager.util.storage import ReleaseSummary
-from mcdreforged_plugin_manager.util.text_util import command_run, insert_between
+from mcdreforged_plugin_manager.util.text_util import new_line, insert_between, command_run
 from mcdreforged_plugin_manager.util.translation import tr
 
-Operation = Tuple[str, DependencyOperation]
+
+class InstallerOperation(ABC):
+    def __init__(self, name: str, operation: DependencyOperation):
+        self.operation = operation
+        self.name = name
+
+    @abstractmethod
+    def operate(self, installer: 'PluginInstaller') -> bool:
+        pass
 
 
-def get_operate_dependencies(plugin_id: str):
-    def get_operate_packages(requirements: List[str]):
-        """
-        Get operate packages from raw requirement list
-        """
-        result: List[Operation] = []
-        for item in requirements:
-            parsed = parse_python_requirement(item)
-            package_checker = PackageDependencyChecker(*parsed)
-            try:
-                package_checker.check()
-            except DependencyError:
-                if package_checker.get_operation() != DependencyOperation.IGNORE:
-                    result.append((parsed[0], package_checker.get_operation()))
-        return result
+class InstallerPluginOperation(InstallerOperation):
+    def __init__(self, name: str, operation: DependencyOperation):
+        super().__init__(name, operation)
+        self.operation = operation
+        self.name = name
 
-    meta = cache.get_plugin_by_id(plugin_id)
-    plugins: List[Operation] = [(plugin_id, DependencyOperation.INSTALL)]
-    packages: List[Operation] = get_operate_packages(meta.requirements)
-    for dep_id, requirement in meta.dependencies.items():
+    def operate(self, installer: 'PluginInstaller') -> bool:
+        if self.operation == DependencyOperation.INSTALL:
+            release = ReleaseSummary.of(self.name).get_latest_release()
+            asset = release.get_mcdr_assets()[0]
+            url = asset.browser_download_url
+            filename = asset.name
+            # installer.reply(tr('installer.operation.plugin.downloading', filename))
+            installer.reply(RTextList(
+                '   ',
+                tr('installer.operation.plugin.downloading', filename)
+            ))
+            urlretrieve(url, './plugins/' + release.get_mcdr_assets()[0].name)
+        elif self.operation == DependencyOperation.UPGRADE:
+            pass
+        return True
+
+
+class InstallerPackageOperation(InstallerOperation):
+    def __init__(self, name: str, operation: DependencyOperation):
+        super().__init__(name, operation)
+        self.operation = operation
+        self.name = name
+
+    def operate(self, installer: 'PluginInstaller') -> bool:
+        installer.reply(RTextList(
+            '   ',
+            tr('installer.operation.package.operating_with_pip', tr(self.operation.value), self.name)
+        ))
+        if self.operation == DependencyOperation.INSTALL:
+            pass
+        elif self.operation == DependencyOperation.UPGRADE:
+            pass
+        return True
+
+
+def get_operate_packages(requirements: List[str]):
+    """
+    Get a list of operations from raw requirement list
+    """
+    result: List[InstallerPackageOperation] = []
+    for line in requirements:
+        package, requirement = parse_python_requirement(line)
+        dependency_checker = PackageDependencyChecker(package, requirement)
+        try:
+            dependency_checker.check()
+        except DependencyError:
+            if dependency_checker.get_operation() != DependencyOperation.IGNORE:
+                result.append(InstallerPackageOperation(package, dependency_checker.get_operation()))
+    return result
+
+
+def get_operations(plugin_id: str):
+    operations: List[InstallerOperation] = []
+    plugin = cache.get_plugin_by_id(plugin_id)
+    operations.append(InstallerPluginOperation(plugin_id, DependencyOperation.INSTALL))
+    print('append', plugin_id)
+    operations = [*operations, *get_operate_packages(plugin.requirements)]
+
+    for dep_id, requirement in plugin.dependencies.items():
         plugin_checker = PluginDependencyChecker(dep_id, requirement)
         try:
             # the dependency is satisfied, ignore further dependency checking
             plugin_checker.check()
         except DependencyError:
             # the dependency is not satisfied, add its dependency then
-            dep_plugins, dep_packages = get_operate_dependencies(dep_id)
-            plugins = [*plugins, *dep_plugins]
-            packages = [*packages, *dep_packages]
-    return plugins, packages
+            operations = [*operations, *get_operations(dep_id)]
+
+    return operations
 
 
 class PluginInstaller(Task):
     def __init__(self, plugin_id: str, source: CommandSource):
-        self.meta = cache.get_plugin_by_id(plugin_id)
+        self.plugin_id = plugin_id
         self.reply = source.reply
-        self.server = source.get_server()
-        self.operate_plugins: List[Operation] = []
-        self.operate_packages: List[Operation] = []
+        self.operations: List[InstallerOperation] = []
         super().__init__()
 
-    def is_installed(self):
-        return self.meta.is_installed()
+    def __add_operation(self, operation: InstallerOperation):
+        self.operations.append(operation)
 
-    def show_confirm(self):
-        if self.is_installed():
-            self.reply(tr('installer.already_installed'))
-        else:
-            self.reply(tr('installer.confirm.title'))
-            operate_plugins, operate_packages = self.get_operate_dependencies()
-            self.operate_plugins, self.operate_packages = operate_plugins, operate_packages
-            if len(operate_plugins) > 0:
-                self.reply(tr('installer.confirm.plugin_list'))
-                self.reply(insert_between([RText(name).set_color(
-                    RColor.dark_aqua if op == DependencyOperation.INSTALL else RColor.aqua
-                ) for name, op in operate_plugins], insertion=RText(', ')))
-            if len(operate_packages) > 0:
-                self.reply(tr('installer.confirm.package_list'))
-                self.reply(insert_between([RText(name).set_color(
-                    RColor.dark_aqua if op == DependencyOperation.INSTALL else RColor.aqua
-                ) for name, op in operate_packages], insertion=RText(', ')))
+    def __init_operations(self):
+        self.operations = get_operations(self.plugin_id)
 
-            self.reply(tr('installer.confirm.footer', command_run('!!mpm confirm', '!!mpm confirm', tr('installer.confirm.command_hover'))))
+    def __format_plugins_confirm(self):
+        ops = [op for op in self.operations if isinstance(op, InstallerPluginOperation)]
+        if len(ops) == 0:
+            return RTextList()
+        return RTextList(
+            tr('installer.confirm.plugin_list'),
+            new_line(),
+            insert_between([RText(op.name).set_color(
+                RColor.dark_aqua if op.operation == DependencyOperation.INSTALL else RColor.aqua
+            ) for op in ops], insertion=RText(', '))
+        )
 
-    def get_operate_dependencies(self):
-        return get_operate_dependencies(self.meta.id)
+    def __format_packages_confirm(self):
+        ops = [op for op in self.operations if isinstance(op, InstallerPackageOperation)]
+        if len(ops) == 0:
+            return RTextList()
+        return RTextList(
+            tr('installer.confirm.package_list'),
+            new_line(),
+            insert_between([RText(op.name).set_color(
+                RColor.dark_aqua if op.operation == DependencyOperation.INSTALL else RColor.aqua
+            ) for op in ops], insertion=RText(', '))
+        )
 
-    def get_installed_plugin_file(self, plugin_id: str):
-        return self.server.get_plugin_file_path(plugin_id)
+    def __show_confirm(self):
+        self.reply(tr('installer.confirm.title'))
 
-    def _run(self):
-        for plugin, op in self.operate_plugins:
-            if op == DependencyOperation.INSTALL:
-                release = ReleaseSummary.of(plugin).get_latest_release()
-                self.reply(tr('installer.install.downloading', release.get_mcdr_assets()[0].name))
-                url = release.get_mcdr_assets()[0].browser_download_url
-                urlretrieve(url, './plugins/' + release.get_mcdr_assets()[0].name)
-            elif op == DependencyOperation.UPGRADE:
-                pass
-        self.open_pip_process([package for package, op in self.operate_packages])
+        self.reply(self.__format_plugins_confirm())
+        self.reply(self.__format_packages_confirm())
 
-    def open_pip_process(self, packages: List[str]):
-        params = [sys.executable, '-m', 'pip', 'install', '-U', *packages]
-        self.reply(tr('installer.install.pip.install', ', '.join(packages)))
-        try:
-            subprocess.check_call(params)
-        except subprocess.CalledProcessError as e:
-            self.reply(tr('installer.install.pip.error', e))
+        self.reply(tr('installer.confirm.footer',
+                      command_run('!!mpm confirm', '!!mpm confirm', tr('installer.confirm.command_hover'))))
 
     def init(self):
-        self.show_confirm()
+        self.__init_operations()
+        self.__show_confirm()
+
+    def _run(self):
+        results = []
+        for operation in self.operations:
+            self.reply(tr('installer.operating', tr(operation.operation.value), operation.name))
+            results.append(operation.operate(self))
+        if all(results):
+            self.reply(tr('installer.result.success'))
+        else:
+            self.reply(tr('installer.result.failed'))

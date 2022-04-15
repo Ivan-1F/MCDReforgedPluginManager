@@ -24,9 +24,9 @@ class InvalidDependency(DependencyError):
 
 
 class DependencyOperation(Enum):
-    IGNORE = auto()
-    INSTALL = auto()
-    UPGRADE = auto()
+    IGNORE = 'dependency.operation.ignore'
+    INSTALL = 'dependency.operation.install'
+    UPGRADE = 'dependency.operation.upgrade'
 
 
 class DependencyChecker:
