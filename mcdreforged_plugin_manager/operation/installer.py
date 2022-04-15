@@ -203,7 +203,7 @@ class PluginInstaller(Task):
         if self.__init_operations():
             self.__show_confirm()
 
-    def _run(self):
+    def run(self):
         results = []
         for operation in self.operations:
             self.reply(tr('installer.operating', tr(operation.operation.value), operation.name))

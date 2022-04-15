@@ -30,7 +30,7 @@ class PluginUninstaller(Task):
         self.plugin_id = plugin_id
         super().__init__()
 
-    def _run(self):
+    def run(self):
         success = True
         path = psi.get_plugin_file_path(self.plugin_id)
         self.reply(tr('uninstaller.step.unload_plugin', self.plugin_id))
