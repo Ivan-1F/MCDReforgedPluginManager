@@ -41,6 +41,11 @@ class ReleaseSummary(Serializable):
     etag: str = ''
     releases: List[ReleaseInfo]
 
+    def get_latest_release(self) -> Optional[ReleaseInfo]:
+        if len(self.releases) > 0:
+            return self.releases[0]
+        return None
+
     @classmethod
     def of(cls, plugin_id: str):
         try:

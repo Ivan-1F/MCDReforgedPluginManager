@@ -34,6 +34,8 @@ mcdreforged_plugin_manager:
       package_list: '§l将§3安装§r或§b更新§r以下包:'
       footer: 请使用 §6{0}§r 确认操作
       command_hover: 确认
+    install:
+      downloading: 正在下载 §6{0}
 
   task_manager:
     nothing_to_confirm: §c没有什么需要确认的

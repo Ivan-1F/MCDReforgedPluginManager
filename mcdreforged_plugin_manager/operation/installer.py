@@ -1,4 +1,5 @@
 from typing import List, Tuple
+from urllib.request import urlretrieve
 
 from mcdreforged.api.all import *
 
@@ -7,6 +8,7 @@ from mcdreforged_plugin_manager.dependency_checker import PluginDependencyChecke
 from mcdreforged_plugin_manager.operation.task_manager import Task
 from mcdreforged_plugin_manager.util.cache import cache
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
+from mcdreforged_plugin_manager.util.storage import ReleaseSummary
 from mcdreforged_plugin_manager.util.text_util import command_run, insert_between
 from mcdreforged_plugin_manager.util.translation import tr
 
@@ -50,6 +52,8 @@ class PluginInstaller(Task):
         self.meta = cache.get_plugin_by_id(plugin_id)
         self.reply = source.reply
         self.server = source.get_server()
+        self.operate_plugins: List[Operation] = []
+        self.operate_packages: List[Operation] = []
         super().__init__()
 
     def is_installed(self):
@@ -61,6 +65,7 @@ class PluginInstaller(Task):
         else:
             self.reply(tr('installer.confirm.title'))
             operate_plugins, operate_packages = self.get_operate_dependencies()
+            self.operate_plugins, self.operate_packages = operate_plugins, operate_packages
             if len(operate_plugins) > 0:
                 self.reply(tr('installer.confirm.plugin_list'))
                 self.reply(insert_between([RText(name).set_color(
@@ -77,9 +82,20 @@ class PluginInstaller(Task):
     def get_operate_dependencies(self):
         return get_operate_dependencies(self.meta.id)
 
+    def get_installed_plugin_file(self, plugin_id: str):
+        return self.server.get_plugin_file_path(plugin_id)
+
     def run(self):
-        self.reply('run with ' + str(self.get_operate_dependencies()))
-        pass
+        for plugin, op in self.operate_plugins:
+            if op == DependencyOperation.INSTALL:
+                release = ReleaseSummary.of(plugin).get_latest_release()
+                self.reply(tr('installer.install.downloading', release.get_mcdr_assets()[0].name))
+                url = release.get_mcdr_assets()[0].browser_download_url
+                urlretrieve(url, './plugins/' + release.get_mcdr_assets()[0].name)
+            elif op == DependencyOperation.UPGRADE:
+                pass
+        for package, op in self.operate_packages:
+            pass
 
     def init(self):
         self.show_confirm()
