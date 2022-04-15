@@ -42,6 +42,7 @@ def list_plugins(source: CommandSource, labels: Optional[Union[type(None), str, 
 def search(source: CommandSource, query: str):
     for plugin in cache.search(query):
         source.reply(plugin.brief)
+        source.reply('')
 
 
 @ensure_plugin_id
