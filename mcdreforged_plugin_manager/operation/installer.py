@@ -1,7 +1,7 @@
 import subprocess
 import sys
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 import requests
 from mcdreforged.api.all import *
@@ -163,7 +163,7 @@ class PluginInstaller(Task):
     def __format_plugins_confirm(self):
         ops = [op for op in self.operations if isinstance(op, InstallerPluginOperation)]
         if len(ops) == 0:
-            return RTextList()
+            return None
         return RTextList(
             tr('installer.confirm.plugin_list'),
             new_line(),
@@ -175,7 +175,7 @@ class PluginInstaller(Task):
     def __format_packages_confirm(self):
         ops = [op for op in self.operations if isinstance(op, InstallerPackageOperation)]
         if len(ops) == 0:
-            return RTextList()
+            return None
         return RTextList(
             tr('installer.confirm.package_list'),
             new_line(),
@@ -184,14 +184,18 @@ class PluginInstaller(Task):
             ) for op in ops], insertion=RText(', '))
         )
 
+    def __reply_if_present(self, text: Optional[RTextBase]):
+        if text is not None:
+            self.reply(text)
+
     def __show_confirm(self):
         self.reply(tr(
             'installer.confirm.title',
             tr('dependency.operation.upgrade') if self.upgrade else tr('dependency.operation.install')
         ))
 
-        self.reply(self.__format_plugins_confirm())
-        self.reply(self.__format_packages_confirm())
+        self.__reply_if_present(self.__format_plugins_confirm())
+        self.__reply_if_present(self.__format_packages_confirm())
 
         self.reply(tr('installer.confirm.footer', CONFIRM_COMMAND_TEXT))
 
