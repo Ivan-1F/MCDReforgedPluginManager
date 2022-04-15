@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List
 from urllib.request import urlretrieve
 
+import requests
 from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.constants import psi
@@ -11,6 +12,7 @@ from mcdreforged_plugin_manager.dependency_checker import DependencyOperation, P
 from mcdreforged_plugin_manager.operation.task_manager import Task
 from mcdreforged_plugin_manager.util.cache import cache
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
+from mcdreforged_plugin_manager.util.network_util import download_file
 from mcdreforged_plugin_manager.util.storage import ReleaseSummary
 from mcdreforged_plugin_manager.util.text_util import new_line, insert_between, command_run, indented
 from mcdreforged_plugin_manager.util.translation import tr
@@ -40,14 +42,27 @@ class InstallerPluginOperation(InstallerOperation):
             ))
             os.remove(old_path)
         if self.operation in [DependencyOperation.INSTALL, DependencyOperation.UPGRADE]:
-            release = ReleaseSummary.of(self.name).get_latest_release()
+            try:
+                summary = ReleaseSummary.of(self.name)
+            except requests.RequestException as e:
+                installer.reply(indented(
+                    tr('plugin.release.failed_to_get_release', e)
+                ))
+                return False
+            release = summary.get_latest_release()
             asset = release.get_mcdr_assets()[0]
             url = asset.browser_download_url
             filename = asset.name
             installer.reply(indented(
                 tr('installer.operation.plugin.downloading', filename)
             ))
-            urlretrieve(url, './plugins/' + release.get_mcdr_assets()[0].name)
+            try:
+                download_file(url, './plugins/' + filename)
+            except requests.RequestException as e:
+                installer.reply(indented(
+                    tr('installer.operation.plugin.exception', filename), 2
+                ))
+                return False
         return True
 
 

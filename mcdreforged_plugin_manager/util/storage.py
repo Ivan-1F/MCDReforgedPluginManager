@@ -48,13 +48,9 @@ class ReleaseSummary(Serializable):
 
     @classmethod
     def of(cls, plugin_id: str):
-        try:
-            data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id),
-                                timeout=config.timeout).json()
-            return cls.deserialize(data)
-        except requests.RequestException as e:
-            psi.logger.warning(tr('cache.release.exception', plugin_id, e))
-            return None
+        data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id),
+                            timeout=config.timeout).json()
+        return cls.deserialize(data)
 
 
 class MetaInfo(Serializable):
@@ -148,7 +144,11 @@ class MetaInfo(Serializable):
     @property
     def formatted_releases(self):
         result: List[RTextBase] = []
-        for release in self.get_release_summary().releases:
+        try:
+            summary = self.get_release_summary()
+        except requests.RequestException as e:
+            return tr('plugin.release.failed_to_get_release', e)
+        for release in summary.releases:
             for asset in release.get_mcdr_assets():
                 asset_text = RTextList(
                     link(asset.name, release.url), ' | ', size(asset.size), ' | ',
