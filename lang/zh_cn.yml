@@ -10,6 +10,7 @@ mcdreforged_plugin_manager:
     author: '§l作者: §r{0}'
     label: '§l标签: §r{0}'
     not_found: §c未找到插件 {0}
+    not_installed: §c插件 {0} 未安装
     operation:
       install: 安装
       show_info: 显示信息
