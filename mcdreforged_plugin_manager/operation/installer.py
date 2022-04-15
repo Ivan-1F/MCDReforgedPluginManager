@@ -59,7 +59,7 @@ class InstallerPluginOperation(InstallerOperation):
                 download_file(url, './plugins/' + filename)
             except requests.RequestException as e:
                 installer.reply(indented(
-                    tr('installer.operation.plugin.exception', filename), 2
+                    tr('installer.operation.plugin.exception', e), 2
                 ))
                 return False
         return True
