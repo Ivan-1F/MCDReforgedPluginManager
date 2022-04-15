@@ -1,9 +1,11 @@
+import os
 from abc import ABC, abstractmethod
-from typing import List, Any
+from typing import List
 from urllib.request import urlretrieve
 
 from mcdreforged.api.all import *
 
+from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.dependency_checker import DependencyOperation, PackageDependencyChecker, \
     DependencyError, PluginDependencyChecker
 from mcdreforged_plugin_manager.operation.task_manager import Task
@@ -31,18 +33,21 @@ class InstallerPluginOperation(InstallerOperation):
         self.name = name
 
     def operate(self, installer: 'PluginInstaller') -> bool:
-        if self.operation == DependencyOperation.INSTALL:
+        if self.operation == DependencyOperation.UPGRADE:
+            old_path = psi.get_plugin_file_path(self.name)
+            installer.reply(indented(
+                tr('installer.operation.plugin.removing', old_path)
+            ))
+            os.remove(old_path)
+        if self.operation in [DependencyOperation.INSTALL, DependencyOperation.UPGRADE]:
             release = ReleaseSummary.of(self.name).get_latest_release()
             asset = release.get_mcdr_assets()[0]
             url = asset.browser_download_url
             filename = asset.name
-            # installer.reply(tr('installer.operation.plugin.downloading', filename))
             installer.reply(indented(
                 tr('installer.operation.plugin.downloading', filename)
             ))
             urlretrieve(url, './plugins/' + release.get_mcdr_assets()[0].name)
-        elif self.operation == DependencyOperation.UPGRADE:
-            pass
         return True
 
 
@@ -79,10 +84,10 @@ def get_operate_packages(requirements: List[str]):
     return result
 
 
-def get_operations(plugin_id: str):
+def get_operations(plugin_id: str, self_operation: DependencyOperation):
     operations: List[InstallerOperation] = []
     plugin = cache.get_plugin_by_id(plugin_id)
-    operations.append(InstallerPluginOperation(plugin_id, DependencyOperation.INSTALL))
+    operations.append(InstallerPluginOperation(plugin_id, self_operation))
     operations = [*operations, *get_operate_packages(plugin.requirements)]
 
     for dep_id, requirement in plugin.dependencies.items():
@@ -92,13 +97,14 @@ def get_operations(plugin_id: str):
             plugin_checker.check()
         except DependencyError:
             # the dependency is not satisfied, add its dependency then
-            operations = [*operations, *get_operations(dep_id)]
+            operations = [*operations, *get_operations(dep_id, plugin_checker.get_operation())]
 
     return operations
 
 
 class PluginInstaller(Task):
-    def __init__(self, plugin_id: str, source: CommandSource):
+    def __init__(self, plugin_id: str, source: CommandSource, upgrade=False):
+        self.upgrade = upgrade
         self.plugin_id = plugin_id
         self.reply = source.reply
         self.operations: List[InstallerOperation] = []
@@ -108,7 +114,8 @@ class PluginInstaller(Task):
         self.operations.append(operation)
 
     def __init_operations(self):
-        self.operations = get_operations(self.plugin_id)
+        self.operations = get_operations(self.plugin_id,
+                                         DependencyOperation.UPGRADE if self.upgrade else DependencyOperation.INSTALL)
 
     def __format_plugins_confirm(self):
         ops = [op for op in self.operations if isinstance(op, InstallerPluginOperation)]
@@ -144,6 +151,7 @@ class PluginInstaller(Task):
                       command_run('!!mpm confirm', '!!mpm confirm', tr('installer.confirm.command_hover'))))
 
     def init(self):
+        # TODO: check if installed already
         self.__init_operations()
         self.__show_confirm()
 

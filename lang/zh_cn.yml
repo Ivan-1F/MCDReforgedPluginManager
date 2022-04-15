@@ -27,7 +27,7 @@ mcdreforged_plugin_manager:
     satisfied: 依赖项满足
     operation:
       install: §3安装§r
-      update: §b更新§r
+      upgrade: §b更新§r
 
   installer:
     already_installed: 插件 {0} 已安装
@@ -41,12 +41,12 @@ mcdreforged_plugin_manager:
     operation:
       plugin:
         downloading: 正在下载 §6{0}
-        deleting: 正在删除 §6{0}
+        removing: 正在删除 §6{0}
       package:
         operating_with_api: 正在通过 pip {0} §6{1}
     result:
-      success: §a安装成功
-      failed: §c安装失败
+      success: §a操作成功
+      failed: §c操作失败
 
   task_manager:
     nothing_to_confirm: §c没有什么需要确认的

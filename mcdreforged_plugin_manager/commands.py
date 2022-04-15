@@ -37,5 +37,11 @@ def info(source: CommandSource, plugin_id: str):
 
 @ensure_plugin_id
 def install(source: CommandSource, plugin_id: str):
-    installer = PluginInstaller(plugin_id, source)
+    installer = PluginInstaller(plugin_id, source, upgrade=False)
+    task_manager.manage_task(installer)
+
+
+@ensure_plugin_id
+def upgrade(source: CommandSource, plugin_id: str):
+    installer = PluginInstaller(plugin_id, source, upgrade=True)
     task_manager.manage_task(installer)
