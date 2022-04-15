@@ -12,6 +12,7 @@ from mcdreforged_plugin_manager.dependency_checker import DependencyOperation, P
     DependencyError, PluginDependencyChecker
 from mcdreforged_plugin_manager.operation.task_manager import Task
 from mcdreforged_plugin_manager.util.cache import cache
+from mcdreforged_plugin_manager.util.mcdr_util import is_plugin_loaded, remove_plugin_file
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
 from mcdreforged_plugin_manager.util.network_util import download_file
 from mcdreforged_plugin_manager.util.storage import ReleaseSummary
@@ -37,11 +38,10 @@ class InstallerPluginOperation(InstallerOperation):
 
     def operate(self, installer: 'PluginInstaller') -> bool:
         if self.operation == DependencyOperation.UPGRADE:
-            old_path = psi.get_plugin_file_path(self.name)
             installer.reply(indented(
                 tr('installer.operation.plugin.removing', old_path)
             ))
-            os.remove(old_path)
+            remove_plugin_file(self.name)
         if self.operation in [DependencyOperation.INSTALL, DependencyOperation.UPGRADE]:
             try:
                 summary = ReleaseSummary.of(self.name)
@@ -142,7 +142,7 @@ class PluginInstaller(Task):
         self.operations.append(operation)
 
     def __init_operations(self):
-        if self.plugin_id in psi.get_plugin_list():
+        if is_plugin_loaded(self.plugin_id):
             if not self.upgrade:
                 self.reply(tr('installer.already_installed', self.plugin_id))
             local_version = psi.get_plugin_metadata(self.plugin_id).version

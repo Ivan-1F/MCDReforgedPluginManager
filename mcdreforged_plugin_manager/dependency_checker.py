@@ -3,6 +3,7 @@ from enum import auto, Enum
 from mcdreforged.plugin.meta.version import VersionRequirement, VersionParsingError
 
 from mcdreforged_plugin_manager.constants import psi
+from mcdreforged_plugin_manager.util.mcdr_util import is_plugin_loaded
 from mcdreforged_plugin_manager.util.misc import get_package_version
 from mcdreforged_plugin_manager.util.translation import tr
 
@@ -73,7 +74,7 @@ class PluginDependencyChecker(DependencyChecker):
         super().__init__(name, requirement)
 
     def check(self):
-        if self.name not in psi.get_plugin_list() and self.name != 'mcdreforged':
+        if is_plugin_loaded(self.name) and self.name != 'mcdreforged':
             raise DependencyNotFound(tr('dependency.dependency_not_found', self.name))
         metadata = psi.get_plugin_metadata(self.name)
         self._check_version(metadata.version)

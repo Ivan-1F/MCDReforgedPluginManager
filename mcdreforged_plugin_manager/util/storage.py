@@ -181,12 +181,6 @@ class MetaInfo(Serializable):
         brief.append(self.formatted_releases)
         return brief
 
-    def is_installed(self):
-        return self.id in psi.get_plugin_list()
-
-    def should_update(self):
-        return self.is_installed() and psi.get_plugin_metadata(self.id).version < self.version
-
     @property
     def formatted_requirements(self):
         requirements = {parse_python_requirement(requirement)[0]: parse_python_requirement(requirement)[1]
