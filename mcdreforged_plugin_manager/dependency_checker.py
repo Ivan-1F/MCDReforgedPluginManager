@@ -74,7 +74,7 @@ class PluginDependencyChecker(DependencyChecker):
         super().__init__(name, requirement)
 
     def check(self):
-        if is_plugin_loaded(self.name) and self.name != 'mcdreforged':
+        if not is_plugin_loaded(self.name) and self.name != 'mcdreforged':
             raise DependencyNotFound(tr('dependency.dependency_not_found', self.name))
         metadata = psi.get_plugin_metadata(self.name)
         self._check_version(metadata.version)

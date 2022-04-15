@@ -1,4 +1,3 @@
-import os
 import subprocess
 import sys
 from abc import ABC, abstractmethod
@@ -11,12 +10,13 @@ from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.dependency_checker import DependencyOperation, PackageDependencyChecker, \
     DependencyError, PluginDependencyChecker
 from mcdreforged_plugin_manager.operation.task_manager import Task
+from mcdreforged_plugin_manager.texts import CONFIRM_COMMAND_TEXT
 from mcdreforged_plugin_manager.util.cache import cache
 from mcdreforged_plugin_manager.util.mcdr_util import is_plugin_loaded, remove_plugin_file
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
 from mcdreforged_plugin_manager.util.network_util import download_file
 from mcdreforged_plugin_manager.util.storage import ReleaseSummary
-from mcdreforged_plugin_manager.util.text_util import new_line, insert_between, command_run, indented
+from mcdreforged_plugin_manager.util.text_util import new_line, insert_between, indented
 from mcdreforged_plugin_manager.util.translation import tr
 
 
@@ -39,7 +39,7 @@ class InstallerPluginOperation(InstallerOperation):
     def operate(self, installer: 'PluginInstaller') -> bool:
         if self.operation == DependencyOperation.UPGRADE:
             installer.reply(indented(
-                tr('installer.operation.plugin.removing', old_path)
+                tr('installer.operation.plugin.removing', psi.get_plugin_file_path(self.name))
             ))
             remove_plugin_file(self.name)
         if self.operation in [DependencyOperation.INSTALL, DependencyOperation.UPGRADE]:
@@ -128,8 +128,6 @@ def get_operations(plugin_id: str, self_operation: DependencyOperation):
 
 
 class PluginInstaller(Task):
-    CONFIRM_COMMAND_TEXT = command_run('!!mpm confirm', '!!mpm confirm', tr('installer.confirm.command_hover'))
-
     def __init__(self, plugin_id: str, source: CommandSource, upgrade=False):
         self.upgrade = upgrade
         self.plugin_id = plugin_id
@@ -196,7 +194,7 @@ class PluginInstaller(Task):
         self.reply(self.__format_plugins_confirm())
         self.reply(self.__format_packages_confirm())
 
-        self.reply(tr('installer.confirm.footer', self.CONFIRM_COMMAND_TEXT))
+        self.reply(tr('installer.confirm.footer', CONFIRM_COMMAND_TEXT))
 
     def init(self):
         if self.__init_operations():
@@ -207,7 +205,7 @@ class PluginInstaller(Task):
         for operation in self.operations:
             self.reply(tr('installer.operating', tr(operation.operation.value), operation.name))
             results.append(operation.operate(self))
-        self.reply(tr('installer.operation.reload'))
+        self.reply(tr('installer.operation.reload_mcdr'))
         psi.refresh_all_plugins()
         if all(results):
             self.reply(tr('installer.result.success'))

@@ -4,6 +4,7 @@ from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.operation.installer import PluginInstaller
 from mcdreforged_plugin_manager.operation.task_manager import task_manager
+from mcdreforged_plugin_manager.operation.uninstaller import PluginUninstaller
 from mcdreforged_plugin_manager.util.cache import cache
 from mcdreforged_plugin_manager.util.mcdr_util import is_plugin_loaded
 from mcdreforged_plugin_manager.util.translation import tr
@@ -58,3 +59,9 @@ def install(source: CommandSource, plugin_id: str):
 def upgrade(source: CommandSource, plugin_id: str):
     installer = PluginInstaller(plugin_id, source, upgrade=True)
     task_manager.manage_task(installer)
+
+
+@ensure_plugin_installed
+def uninstall(source: CommandSource, plugin_id: str):
+    uninstaller = PluginUninstaller(plugin_id, source)
+    task_manager.manage_task(uninstaller)

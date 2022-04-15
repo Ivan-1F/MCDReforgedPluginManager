@@ -1,6 +1,6 @@
 from mcdreforged.api.all import *
 
-from mcdreforged_plugin_manager.commands import list_plugins, search, info, install, upgrade
+from mcdreforged_plugin_manager.commands import list_plugins, search, info, install, upgrade, uninstall
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.operation.task_manager import task_manager
@@ -50,6 +50,14 @@ def register_commands(server: PluginServerInterface):
                 Text('plugin_id')
                 .suggests(psi.get_plugin_list)
                 .runs(lambda src, ctx: upgrade(src, ctx['plugin_id']))
+            )
+        )
+        .then(
+            get_literal('uninstall')
+            .then(
+                Text('plugin_id')
+                .suggests(psi.get_plugin_list)
+                .runs(lambda src, ctx: uninstall(src, ctx['plugin_id']))
             )
         )
         .then(
