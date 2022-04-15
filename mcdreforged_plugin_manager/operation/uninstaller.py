@@ -38,7 +38,7 @@ class PluginUninstaller(Task):
         self.reply(tr('uninstaller.step.remove_file', path))
         os.remove(path)
         self.reply(tr('uninstaller.step.reload_mcdr'))
-        psi.refresh_all_plugins()
+        psi.refresh_changed_plugins()
         if success:
             self.reply(tr('uninstaller.result.success'))
         else:
