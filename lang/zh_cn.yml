@@ -7,6 +7,9 @@ mcdreforged_plugin_manager:
     clock:
       started: 插件库索引定时更新计时器启动，间隔 {0} 秒
   plugin:
+    status:
+      installed: §a已安装
+      uninstalled: §c未安装
     no_description: 无简介
     author: '§l作者: §r{0}'
     label: '§l标签: §r{0}'

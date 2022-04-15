@@ -11,7 +11,7 @@ from mcdreforged_plugin_manager.util.translation import tr
 
 def register_commands(server: PluginServerInterface):
     def get_literal(literal: str):
-        return Literal(literal).requires(lambda src, ctx: src.has_permission(config.permission), tr('permission_denied'))
+        return Literal(literal).requires(lambda src, ctx: src.has_permission(config.permission), lambda: tr('permission_denied'))
     server.register_command(
         Literal('!!mpm')
         .then(

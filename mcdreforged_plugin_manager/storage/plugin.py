@@ -56,9 +56,14 @@ class MetaInfo(Serializable):
         )
 
     @property
+    def installed_text(self):
+        return tr('plugin.status.installed') if is_plugin_loaded(self.id) else tr('plugin.status.uninstalled')
+
+    @property
     def format(self) -> RTextList:
         return RTextList(
             RTextList(link(RText(self.name), self.repository), ' ', self.version_text),
+            ' ', self.installed_text,
             new_line(),
             tr('plugin.author', ', '.join(self.authors)),
             new_line(),
