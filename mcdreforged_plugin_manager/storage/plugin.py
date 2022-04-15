@@ -102,26 +102,26 @@ class MetaInfo(Serializable):
     def get_release_summary(self) -> ReleaseSummary:
         return ReleaseSummary.of(self.id)
 
-    @property
-    def formatted_releases(self) -> RTextBase:
-        result: List[RTextBase] = []
-        try:
-            summary = self.get_release_summary()
-        except requests.RequestException as e:
-            return tr('plugin.release.failed_to_get_release', e)
-        for release in summary.releases:
-            for asset in release.get_mcdr_assets():
-                asset_text = RTextList(
-                    link(asset.name, release.url), ' | ', size(asset.size), ' | ',
-                    release.tag_name, ' | ',
-                    command_run(
-                        '[↓]',
-                        '!!mpm install {} {}'.format(self.id, release.tag_name),
-                        tr('plugin.operation.install')
-                    ).set_color(RColor.green)
-                )
-                result.append(asset_text)
-        return insert_new_lines(result)
+    # @property
+    # def formatted_releases(self) -> RTextBase:
+    #     result: List[RTextBase] = []
+    #     try:
+    #         summary = self.get_release_summary()
+    #     except requests.RequestException as e:
+    #         return tr('plugin.release.failed_to_get_release', e)
+    #     for release in summary.releases:
+    #         for asset in release.get_mcdr_assets():
+    #             asset_text = RTextList(
+    #                 link(asset.name, release.url), ' | ', size(asset.size), ' | ',
+    #                 release.tag_name, ' | ',
+    #                 command_run(
+    #                     '[↓]',
+    #                     '!!mpm install {} {}'.format(self.id, release.tag_name),
+    #                     tr('plugin.operation.install')
+    #                 ).set_color(RColor.green)
+    #             )
+    #             result.append(asset_text)
+    #     return insert_new_lines(result)
 
     @property
     def detail(self) -> RTextBase:
@@ -136,10 +136,10 @@ class MetaInfo(Serializable):
             brief.append(bold(tr('plugin.detail.requirement')))
             brief.append(new_line())
             brief.append(self.formatted_requirements)
-        brief.append(new_line())
-        brief.append(bold(tr('plugin.detail.release')))
-        brief.append(new_line())
-        brief.append(self.formatted_releases)
+        # brief.append(new_line())
+        # brief.append(bold(tr('plugin.detail.release')))
+        # brief.append(new_line())
+        # brief.append(self.formatted_releases)
         return brief
 
     @property
