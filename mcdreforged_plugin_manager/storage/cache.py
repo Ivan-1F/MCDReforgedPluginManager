@@ -83,8 +83,9 @@ cache = Cache.load()
 
 def clock_callback():
     cache.cache()
-    from mcdreforged_plugin_manager.util import update_helper
-    update_helper.show_check_update_result(psi.logger.info)
+    if config.check_update:
+        from mcdreforged_plugin_manager.util import update_helper
+        update_helper.show_check_update_result(psi.logger.info)
 
 
 cache_clock = CacheClock(config.cache_interval * 60, event=clock_callback)
