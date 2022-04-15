@@ -47,6 +47,7 @@ mcdreforged_plugin_manager:
       package:
         operating_with_pip: 正在通过 pip {0} §6{1}
         exception: '§c发生异常: {0}'
+      reload: 正在重载 MCDR
     result:
       success: §a操作成功
       failed: §c操作失败
