@@ -48,7 +48,6 @@ def register_commands(server: PluginServerInterface):
             get_literal('upgrade')
             .then(
                 Text('plugin_id')
-                # TODO: suggests installed plugins only
                 .suggests(psi.get_plugin_list)
                 .runs(lambda src, ctx: upgrade(src, ctx['plugin_id']))
             )
