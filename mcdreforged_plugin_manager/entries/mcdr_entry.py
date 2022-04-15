@@ -6,11 +6,12 @@ from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.operation.task_manager import task_manager
 from mcdreforged_plugin_manager.storage.cache import cache, cache_clock
 from mcdreforged_plugin_manager.util import update_helper
+from mcdreforged_plugin_manager.util.translation import tr
 
 
 def register_commands(server: PluginServerInterface):
     def get_literal(literal: str):
-        return Literal(literal).requires(lambda src, ctx: src.has_permission(config.permission))
+        return Literal(literal).requires(lambda src, ctx: src.has_permission(config.permission), tr('permission_denied'))
     server.register_command(
         Literal('!!mpm')
         .then(

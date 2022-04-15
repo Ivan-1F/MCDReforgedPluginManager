@@ -1,4 +1,5 @@
 mcdreforged_plugin_manager:
+  permission_denied: §c权限不足
   cache:
     cache: 正在更新插件库索引
     cached: 插件库索引更新完成; 新增 {0} 个插件
