@@ -99,8 +99,8 @@ class MetaInfo(Serializable):
                 ))
         return insert_new_lines(result)
 
-    def get_release_summary(self) -> ReleaseSummary:
-        return ReleaseSummary.of(self.id)
+    # def get_release_summary(self) -> ReleaseSummary:
+    #     return ReleaseSummary.of(self.id)
 
     # @property
     # def formatted_releases(self) -> RTextBase:
