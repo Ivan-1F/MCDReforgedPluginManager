@@ -1,3 +1,5 @@
+import subprocess
+import sys
 from typing import List, Tuple
 from urllib.request import urlretrieve
 
@@ -94,8 +96,15 @@ class PluginInstaller(Task):
                 urlretrieve(url, './plugins/' + release.get_mcdr_assets()[0].name)
             elif op == DependencyOperation.UPGRADE:
                 pass
-        for package, op in self.operate_packages:
-            pass
+        self.open_pip_process([package for package, op in self.operate_packages])
+
+    def open_pip_process(self, packages: List[str]):
+        params = [sys.executable, '-m', 'pip', 'install', '-U', *packages]
+        self.reply(tr('installer.install.pip.install', ', '.join(packages)))
+        try:
+            subprocess.check_call(params)
+        except subprocess.CalledProcessError as e:
+            self.reply(tr('installer.install.pip.error', e))
 
     def init(self):
         self.show_confirm()

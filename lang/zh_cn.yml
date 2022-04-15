@@ -36,6 +36,9 @@ mcdreforged_plugin_manager:
       command_hover: 确认
     install:
       downloading: 正在下载 §6{0}
+      pip:
+        install: 正在安装 §6{0}
+        error: '安装包时发生错误: {0}'
 
   task_manager:
     nothing_to_confirm: §c没有什么需要确认的
