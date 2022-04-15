@@ -26,17 +26,15 @@ def show_check_update_result(reply: Callable[[RTextBase], Any]):
         reply(tr('update_helper.title'))
         for plugin_id, latest_version, local_version in updates:
             plugin = cache.get_plugin_by_id(plugin_id)
-            texts = RTextList(
-                command_run(RText(plugin.name).set_color(RColor.yellow).set_styles(RStyle.bold),
-                            '!!mpm info ' + plugin_id,
-                            tr('plugin.operation.show_info')),
-                ' ',
-                RText('({})'.format(plugin.id)).set_color(RColor.gray),
-                new_line(),
-                RTextList(RText(local_version).set_color(RColor.gray), ' -> ',
-                          RText(latest_version).set_color(RColor.green)),
-                ' ',
-                command_run(RText('[↑]').set_color(RColor.green),
-                            '!!mpm upgrade ' + plugin_id,
-                            tr('update_helper.click_to_upgrade', latest_version)),
-            )
+            reply(RTextList(command_run(RText(plugin.name).set_color(RColor.yellow).set_styles(RStyle.bold),
+                                        '!!mpm info ' + plugin_id,
+                                        tr('plugin.operation.show_info')),
+                            ' ',
+                            RText('({})'.format(plugin.id)).set_color(RColor.gray)))
+            reply(RTextList(RTextList(RText(local_version).set_color(RColor.gray), ' -> ',
+                                      RText(latest_version).set_color(RColor.green)),
+                            ' ',
+                            command_run(RText('[↑]').set_color(RColor.green),
+                                        '!!mpm upgrade ' + plugin_id,
+                                        tr('update_helper.click_to_upgrade', latest_version))
+                            ))
