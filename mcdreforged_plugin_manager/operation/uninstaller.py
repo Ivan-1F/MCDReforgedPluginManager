@@ -5,8 +5,8 @@ from mcdreforged.api.all import *
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.operation.task_manager import Task
 from mcdreforged_plugin_manager.texts import CONFIRM_COMMAND_TEXT
-from mcdreforged_plugin_manager.util.cache import cache
-from mcdreforged_plugin_manager.util.mcdr_util import remove_plugin_file, unload_plugin
+from mcdreforged_plugin_manager.storage.cache import cache
+from mcdreforged_plugin_manager.util.mcdr_util import unload_plugin
 from mcdreforged_plugin_manager.util.translation import tr
 
 

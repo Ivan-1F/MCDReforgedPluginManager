@@ -9,7 +9,7 @@ from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.util.storage import PluginMetaInfoStorage, ReleaseSummary
+from mcdreforged_plugin_manager.storage.plugin import PluginMetaInfoStorage
 from mcdreforged_plugin_manager.util.translation import tr
 
 

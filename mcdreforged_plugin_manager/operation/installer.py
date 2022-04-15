@@ -11,11 +11,11 @@ from mcdreforged_plugin_manager.dependency_checker import DependencyOperation, P
     DependencyError, PluginDependencyChecker
 from mcdreforged_plugin_manager.operation.task_manager import Task
 from mcdreforged_plugin_manager.texts import CONFIRM_COMMAND_TEXT
-from mcdreforged_plugin_manager.util.cache import cache
+from mcdreforged_plugin_manager.storage.cache import cache
 from mcdreforged_plugin_manager.util.mcdr_util import is_plugin_loaded, remove_plugin_file
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
 from mcdreforged_plugin_manager.util.network_util import download_file
-from mcdreforged_plugin_manager.util.storage import ReleaseSummary
+from mcdreforged_plugin_manager.storage.release import ReleaseSummary
 from mcdreforged_plugin_manager.util.text_util import new_line, insert_between, indented
 from mcdreforged_plugin_manager.util.translation import tr
 
