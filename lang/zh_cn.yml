@@ -55,6 +55,7 @@ mcdreforged_plugin_manager:
       failed: §c操作失败
 
   uninstaller:
+    title: '§l§c卸载§r§l操作确认§r: 将卸载 §6{0}'
     dependency_warning: '§l§c警告！以下插件依赖于 {0}: '
     confirm: 请使用 {0} 确认操作
     step:

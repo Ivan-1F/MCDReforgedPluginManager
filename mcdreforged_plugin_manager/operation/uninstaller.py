@@ -45,6 +45,9 @@ class PluginUninstaller(Task):
             self.reply(tr('uninstaller.result.failed'))
 
     def init(self):
-        self.reply(tr('uninstaller.dependency_warning', self.plugin_id))
-        self.reply(', '.join(list(get_plugins_depend_on(self.plugin_id))))
+        self.reply(tr('uninstaller.title', self.plugin_id))
+        plugins = list(get_plugins_depend_on(self.plugin_id))
+        if len(plugins) > 0:
+            self.reply(tr('uninstaller.dependency_warning', self.plugin_id))
+            self.reply(', '.join(list(get_plugins_depend_on(self.plugin_id))))
         self.reply(tr('uninstaller.confirm', CONFIRM_COMMAND_TEXT))
