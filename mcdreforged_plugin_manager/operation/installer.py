@@ -103,19 +103,40 @@ def get_operations(plugin_id: str, self_operation: DependencyOperation):
 
 
 class PluginInstaller(Task):
+    CONFIRM_COMMAND_TEXT = command_run('!!mpm confirm', '!!mpm confirm', tr('installer.confirm.command_hover'))
+
     def __init__(self, plugin_id: str, source: CommandSource, upgrade=False):
         self.upgrade = upgrade
         self.plugin_id = plugin_id
         self.reply = source.reply
         self.operations: List[InstallerOperation] = []
+        self.__cancel_flag = False
         super().__init__()
 
     def __add_operation(self, operation: InstallerOperation):
         self.operations.append(operation)
 
     def __init_operations(self):
+        if self.plugin_id in psi.get_plugin_list():
+            if not self.upgrade:
+                self.reply(tr('installer.already_installed', self.plugin_id))
+            local_version = psi.get_plugin_metadata(self.plugin_id).version
+            latest_version = cache.get_plugin_by_id(self.plugin_id).version
+            if local_version < Version(latest_version):
+                if not self.upgrade:
+                    self.reply(tr(
+                        'installer.newer_version_available',
+                        self.plugin_id,
+                        latest_version
+                    ))
+                    self.upgrade = True
+            else:
+                if self.upgrade:
+                    self.reply(tr('installer.already_up_to_date', self.plugin_id))
+                    return False
         self.operations = get_operations(self.plugin_id,
                                          DependencyOperation.UPGRADE if self.upgrade else DependencyOperation.INSTALL)
+        return True
 
     def __format_plugins_confirm(self):
         ops = [op for op in self.operations if isinstance(op, InstallerPluginOperation)]
@@ -142,18 +163,19 @@ class PluginInstaller(Task):
         )
 
     def __show_confirm(self):
-        self.reply(tr('installer.confirm.title'))
+        self.reply(tr(
+            'installer.confirm.title',
+            tr('dependency.operation.upgrade') if self.upgrade else tr('dependency.operation.install')
+        ))
 
         self.reply(self.__format_plugins_confirm())
         self.reply(self.__format_packages_confirm())
 
-        self.reply(tr('installer.confirm.footer',
-                      command_run('!!mpm confirm', '!!mpm confirm', tr('installer.confirm.command_hover'))))
+        self.reply(tr('installer.confirm.footer', self.CONFIRM_COMMAND_TEXT))
 
     def init(self):
-        # TODO: check if installed already
-        self.__init_operations()
-        self.__show_confirm()
+        if self.__init_operations():
+            self.__show_confirm()
 
     def _run(self):
         results = []

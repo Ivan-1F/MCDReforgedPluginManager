@@ -37,7 +37,10 @@ class TaskManager:
             source.reply(tr('task_manager.nothing_to_confirm'))
         else:
             self.pending_task._run()
-            self.pending_task = None
+            self.clear_task()
+
+    def clear_task(self):
+        self.pending_task = None
 
 
 task_manager = TaskManager()

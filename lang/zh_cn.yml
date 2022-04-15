@@ -31,8 +31,10 @@ mcdreforged_plugin_manager:
 
   installer:
     already_installed: 插件 {0} 已安装
+    already_up_to_date: 插件 {0} 已为最新版
+    newer_version_available: '插件 {0} 有新版本可用: {1}'
     confirm:
-      title: '§l安装操作确认:'
+      title: '§l{0}操作确认:'
       plugin_list: '§l将§3安装§r或§b更新§r以下插件:'
       package_list: '§l将§3安装§r或§b更新§r以下包:'
       footer: 请使用 §6{0}§r 确认操作
