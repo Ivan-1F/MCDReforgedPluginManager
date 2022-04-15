@@ -153,7 +153,7 @@ class PluginInstaller(Task):
                     ))
                     self.upgrade = True
             else:
-                if self.upgrade:
+                if not self.upgrade:
                     self.reply(tr('installer.already_up_to_date', self.plugin_id))
                     return False
         self.operations = get_operations(self.plugin_id,
