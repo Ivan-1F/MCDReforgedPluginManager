@@ -39,12 +39,31 @@ class MetaInfo(Serializable):
     def version_text(self) -> RTextBase:
         return RText('({}@{})'.format(self.id, self.version), RColor.gray)
 
+    def get_primary_action_button(self):
+        return (
+            command_run('[↓]',
+                        '!!mpm install {}'.format(self.id),
+                        tr('plugin.operation.install')).set_color(RColor.green)
+            if not is_plugin_loaded(self.id) else
+            command_run('[x]',
+                        '!!mpm uninstall {}'.format(self.id),
+                        tr('plugin.operation.uninstall')).set_color(RColor.red)
+        )
+
+    def get_upgrade_action_button(self):
+        success, latest_version, _ = self.check_update()
+        return command_run('[↑]',
+                           '!!mpm upgrade {}'.format(self.id),
+                           tr('plugin.operation.upgrade', latest_version)).set_color(RColor.green) if success else RText('')
+
     @property
     def action_bar(self) -> RTextList:
         return RTextList(
-            command_run('[↓]', '!!mpm install {}'.format(self.id), tr('plugin.operation.install')).set_color(
-                RColor.green),
-            command_run('[i]', '!!mpm info {}'.format(self.id), tr('plugin.operation.show_info')).set_color(RColor.aqua)
+            self.get_primary_action_button(),
+            command_run('[i]',
+                        '!!mpm info {}'.format(self.id),
+                        tr('plugin.operation.show_info')).set_color(RColor.aqua),
+            self.get_upgrade_action_button()
         )
 
     @property
@@ -56,14 +75,14 @@ class MetaInfo(Serializable):
         )
 
     @property
-    def installed_text(self):
-        return tr('plugin.status.installed') if is_plugin_loaded(self.id) else tr('plugin.status.uninstalled')
+    def status_text(self):
+        return tr('plugin.status.installed', psi.get_plugin_metadata(self.id).version) if is_plugin_loaded(self.id) else tr('plugin.status.uninstalled')
 
     @property
     def format(self) -> RTextList:
         return RTextList(
             RTextList(link(RText(self.name), self.repository), ' ', self.version_text),
-            ' ', self.installed_text,
+            ' ', self.status_text,
             new_line(),
             tr('plugin.author', ', '.join(self.authors)),
             new_line(),
@@ -130,7 +149,7 @@ class MetaInfo(Serializable):
 
     @property
     def detail(self) -> RTextBase:
-        brief = self.format
+        brief = self.brief
         if len(self.dependencies.items()) != 0:
             brief.append(new_line())
             brief.append(bold(tr('plugin.detail.dependency')))
