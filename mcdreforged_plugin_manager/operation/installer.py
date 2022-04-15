@@ -143,9 +143,8 @@ class PluginInstaller(Task):
         if is_plugin_loaded(self.plugin_id):
             if not self.upgrade:
                 self.reply(tr('installer.already_installed', self.plugin_id))
-            local_version = psi.get_plugin_metadata(self.plugin_id).version
-            latest_version = cache.get_plugin_by_id(self.plugin_id).version
-            if local_version < Version(latest_version):
+            success, latest_version, local_version = cache.get_plugin_by_id(self.plugin_id).check_update()
+            if success:
                 if not self.upgrade:
                     self.reply(tr(
                         'installer.newer_version_available',

@@ -66,3 +66,8 @@ mcdreforged_plugin_manager:
 
   task_manager:
     nothing_to_confirm: §c没有什么需要确认的
+
+  update_helper:
+    title: '§l以下插件需要更新: '
+    all_up_to_date: §a所有插件均为最新版
+    click_to_upgrade: 点击更新至 {0}

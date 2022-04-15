@@ -13,6 +13,7 @@ class Configure(Serializable):
     source: str = 'https://raw.githubusercontent.com/MCDReforged/PluginCatalogue/meta'
     timeout: int = 15
     cache_interval: int = 30
+    check_update: bool = True
 
     @property
     def get_source(self):

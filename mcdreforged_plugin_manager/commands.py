@@ -8,6 +8,7 @@ from mcdreforged_plugin_manager.operation.uninstaller import PluginUninstaller
 from mcdreforged_plugin_manager.storage.cache import cache
 from mcdreforged_plugin_manager.util.mcdr_util import is_plugin_loaded
 from mcdreforged_plugin_manager.util.translation import tr
+from mcdreforged_plugin_manager.util.update_helper import show_check_update_result
 
 
 def ensure_plugin_id(func: Callable):
@@ -65,3 +66,7 @@ def upgrade(source: CommandSource, plugin_id: str):
 def uninstall(source: CommandSource, plugin_id: str):
     uninstaller = PluginUninstaller(plugin_id, source)
     task_manager.manage_task(uninstaller)
+
+
+def check_update(source: CommandSource):
+    show_check_update_result(source.reply)

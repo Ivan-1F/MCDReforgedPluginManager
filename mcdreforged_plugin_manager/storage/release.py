@@ -6,6 +6,27 @@ from mcdreforged.utils.serializer import Serializable
 from mcdreforged_plugin_manager.config import config
 
 
+class AssetInfo(Serializable):
+    name: str
+    size: int
+    download_count: int
+    created_at: str
+    browser_download_url: str
+
+
+class ReleaseInfo(Serializable):
+    url: str
+    name: str
+    tag_name: str
+    created_at: str
+    assets: List[AssetInfo]
+    description: str
+    prerelease: bool
+
+    def get_mcdr_assets(self) -> List[AssetInfo]:
+        return [asset for asset in self.assets if asset.name.endswith('.mcdr') or asset.name.endswith('.pyz')]
+
+
 class ReleaseSummary(Serializable):
     schema_version: int = None
     id: str
@@ -23,24 +44,3 @@ class ReleaseSummary(Serializable):
         data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id),
                             timeout=config.timeout).json()
         return cls.deserialize(data)
-
-
-class ReleaseInfo(Serializable):
-    url: str
-    name: str
-    tag_name: str
-    created_at: str
-    assets: List[AssetInfo]
-    description: str
-    prerelease: bool
-
-    def get_mcdr_assets(self) -> List[AssetInfo]:
-        return [asset for asset in self.assets if asset.name.endswith('.mcdr') or asset.name.endswith('.pyz')]
-
-
-class AssetInfo(Serializable):
-    name: str
-    size: int
-    download_count: int
-    created_at: str
-    browser_download_url: str

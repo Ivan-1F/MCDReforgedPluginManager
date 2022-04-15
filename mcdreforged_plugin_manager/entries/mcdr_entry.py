@@ -1,10 +1,11 @@
 from mcdreforged.api.all import *
 
-from mcdreforged_plugin_manager.commands import list_plugins, search, info, install, upgrade, uninstall
+from mcdreforged_plugin_manager.commands import list_plugins, search, info, install, upgrade, uninstall, check_update
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.operation.task_manager import task_manager
 from mcdreforged_plugin_manager.storage.cache import cache, cache_clock
+from mcdreforged_plugin_manager.util import update_helper
 
 
 def register_commands(server: PluginServerInterface):
@@ -64,6 +65,10 @@ def register_commands(server: PluginServerInterface):
             get_literal('confirm')
             .runs(task_manager.on_confirm)
         )
+        .then(
+            get_literal('checkupdate')
+            .runs(check_update)
+        )
     )
 
 
@@ -73,6 +78,7 @@ def on_load(server: PluginServerInterface, old):
     cache_clock.start()
     cache.cache()
     cache_clock.reset_timer()
+    update_helper.show_check_update_result(psi.logger.info)
     register_commands(server)
 
 

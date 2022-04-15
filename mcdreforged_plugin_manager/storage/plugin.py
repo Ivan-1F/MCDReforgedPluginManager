@@ -7,6 +7,7 @@ from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.dependency_checker import DependencyChecker, DependencyNotFound, InvalidDependency, \
     DependencyNotMet, PackageDependencyChecker, PluginDependencyChecker
 from mcdreforged_plugin_manager.storage.release import ReleaseSummary
+from mcdreforged_plugin_manager.util.mcdr_util import is_plugin_loaded
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
 from mcdreforged_plugin_manager.util.text_util import italic, parse_markdown, command_run, link, new_line, \
     insert_new_lines, size, bold
@@ -159,6 +160,14 @@ class MetaInfo(Serializable):
             lambda plugin_id, requirement: command_run('- ', '!!mpm info {}'.format(plugin_id),
                                                        tr('plugin.operation.show_info'))
         )
+
+    def check_update(self):
+        if is_plugin_loaded(self.id):
+            local_version = psi.get_plugin_metadata(self.id).version
+            latest_version = Version(self.version)
+            if latest_version > local_version:
+                return True, latest_version, local_version
+        return False, None, None
 
 
 class PluginMetaInfoStorage(Serializable):
