@@ -4,7 +4,6 @@ from mcdreforged.api.all import *
 from ruamel.yaml import YAML, CommentedMap
 
 from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.util.translation import tr
 
 
 class Configure(Serializable):
