@@ -1,6 +1,8 @@
 MCDReforgedPluginManager
 -----
 
+[English](./README_cn.md) | **中文**
+
 > 轻松管理你的 MCDReforged 插件
 
 MCDReforgedPluginManager（简称为 `mpm`）是一个基于 [PluginCatalogue](https://github.com/MCDReforged/PluginCatalogue) 的 MCDReforged 插件管理器

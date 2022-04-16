@@ -1,6 +1,8 @@
 MCDReforgedPluginManager
 -----
 
+**English** | [中文](./README_cn.md)
+
 > Manage your mcdreforged plugins with ease
 
 MCDReforgedPluginManager (short for `mpm`) is a MCDReforged plugin manager based on [PluginCatalogue](https://github.com/MCDReforged/PluginCatalogue)
