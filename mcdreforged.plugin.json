@@ -8,6 +8,7 @@
     ],
     "link": "https://github.com/Ivan1F/MCDReforgedPluginManager",
     "dependencies": {
+        "mcdreforged": ">=2.0.0"
     },
     "entrypoint": "mcdreforged_plugin_manager.entries.mcdr_entry",
     "resources": [
