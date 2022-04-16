@@ -83,6 +83,7 @@ def on_load(server: PluginServerInterface, old):
     cache_clock.reset_timer()
     update_helper.show_check_update_result(psi.logger.info)
     register_commands(server)
+    server.register_help_message('!!mpm', tr('help_summary'))
 
 
 def on_unload(server: PluginServerInterface):

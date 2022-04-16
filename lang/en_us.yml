@@ -12,6 +12,7 @@ mcdreforged_plugin_manager:
     §6{prefix} upgrade §b<plugin_id>§r: Upgrade a plugin to the latest version
     §6{prefix} confirm§r: Confirm the operation
     §6{prefix} checkupdate§r: Manually check update for all installed plugins
+  help_summary: Manage your mcdreforged plugins with ease
   permission_denied: §cPermission denied
   cache:
     cache: Updating plugin index cache

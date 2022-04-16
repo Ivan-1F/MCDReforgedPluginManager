@@ -12,6 +12,7 @@ mcdreforged_plugin_manager:
     §6{prefix} upgrade §b<plugin_id>§r: 将一个插件更新至最新版本
     §6{prefix} confirm§r: 确认操作
     §6{prefix} checkupdate§r: 手动对所有插件检查更新
+  help_summary: 轻松管理你的 MCDReforged 插件
   permission_denied: §c权限不足
   cache:
     cache: 正在更新插件库索引

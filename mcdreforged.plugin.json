@@ -2,7 +2,10 @@
     "id": "mcdreforged_plugin_manager",
     "version": "1.0.0",
     "name": "MCDReforged Plugin Manager",
-    "description": "Manage your mcdreforged plugins with ease",
+    "description": {
+        "en_us": "Manage your mcdreforged plugins with ease",
+        "zh_cn": "轻松管理你的 MCDReforged 插件"
+    },
     "author": [
         "Ivan1F"
     ],
