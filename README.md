@@ -3,7 +3,7 @@ MCDReforgedPluginManager
 
 > Manage your mcdreforged plugins with ease
 
-MCDReforgedPluginManager fetch plugin metadata from [PluginCatelogue](https://github.com/MCDReforged/PluginCatalogue) and update automatically at regular intervals
+MCDReforgedPluginManager fetch plugin metadata from [PluginCatalogue](https://github.com/MCDReforged/PluginCatalogue) and update automatically at regular intervals
 
 ## Features
 
@@ -21,7 +21,7 @@ MCDReforgedPluginManager fetch plugin metadata from [PluginCatelogue](https://gi
 
 The configuration file is `config/mcdreforged_plugin_manager/config.json`
 
-The commented default config file will be generate when mpm is loaded for the first time:
+The commented default config file will be generated when mpm is loaded for the first time:
 
 ```yaml
 # Configure file for MCDReforgedPluginManager
@@ -57,7 +57,7 @@ Follow the comments and modify the config, use `!!MCDR plg reload mcdreforged_pl
 
 - `!!mpm`: Display MPM help message
 - `!!mpm list [labels]`: List all the plugins. If labels is specified, only plugins with specified labels will be displayed
-  `labels` can be a single label or multiple labels splitted by `,`. Accepted labels: `information`, `tool`, `management`, `api`
+  `labels` can be a single label or multiple labels split by `,`. Accepted labels: `information`, `tool`, `management`, `api`
 
 - `!!mpm search <query>`: Search plugins based on the keyword
 - `!!mpm info <plugin_id>`: Show detailed information of a plugin
