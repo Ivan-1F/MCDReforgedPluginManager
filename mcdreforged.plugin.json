@@ -11,6 +11,6 @@
     },
     "entrypoint": "mcdreforged_plugin_manager.entries.mcdr_entry",
     "resources": [
-        "lang"
+        "lang", "resources"
     ]
 }
