@@ -25,8 +25,7 @@ class MetaInfo(Serializable):
     requirements: List[str]
     description: Dict[str, str]
 
-    @property
-    def formatted_description(self) -> RTextBase:
+    def __get_formatted_description(self) -> RTextBase:
         if not self.description:
             return italic(tr('plugin.no_description'))
         language = psi.get_mcdr_language()
@@ -35,11 +34,10 @@ class MetaInfo(Serializable):
             text = list(self.description.values())[0]
         return parse_markdown(text)
 
-    @property
-    def version_text(self) -> RTextBase:
+    def __get_version_text(self) -> RTextBase:
         return RText('({}@{})'.format(self.id, self.version), RColor.gray)
 
-    def get_primary_action_button(self):
+    def __get_primary_action_button(self):
         return (
             command_run('[↓]',
                         '!!mpm install {}'.format(self.id),
@@ -50,51 +48,49 @@ class MetaInfo(Serializable):
                         tr('plugin.operation.uninstall')).set_color(RColor.red)
         )
 
-    def get_upgrade_action_button(self):
+    def __get_upgrade_action_button(self):
         success, latest_version, _ = self.check_update()
         return command_run('[↑]',
                            '!!mpm upgrade {}'.format(self.id),
                            tr('plugin.operation.upgrade', latest_version)).set_color(RColor.green) if success else RText('')
 
-    @property
-    def action_bar(self) -> RTextList:
+    def __get_action_bar(self) -> RTextList:
         return RTextList(
-            self.get_primary_action_button(),
+            self.__get_primary_action_button(),
             command_run('[i]',
                         '!!mpm info {}'.format(self.id),
                         tr('plugin.operation.show_info')).set_color(RColor.aqua),
-            self.get_upgrade_action_button()
+            self.__get_upgrade_action_button()
         )
 
     @property
     def brief(self) -> RTextList:
         return RTextList(
-            self.action_bar,
+            self.__get_action_bar(),
             new_line(),
             self.format
         )
 
-    @property
-    def status_text(self):
+    def __get_status_text(self):
         return tr('plugin.status.installed', psi.get_plugin_metadata(self.id).version) if is_plugin_loaded(self.id) else tr('plugin.status.uninstalled')
 
     @property
     def format(self) -> RTextList:
         return RTextList(
-            RTextList(link(RText(self.name), self.repository), ' ', self.version_text),
-            ' ', self.status_text,
+            RTextList(link(RText(self.name), self.repository), ' ', self.__get_version_text()),
+            ' ', self.__get_status_text(),
             new_line(),
             tr('plugin.author', ', '.join(self.authors)),
             new_line(),
             tr('plugin.label', ', '.join(self.labels)),
             new_line(),
-            self.formatted_description,
+            self.__get_formatted_description(),
         )
 
     T = TypeVar('T', bound=DependencyChecker)
 
     @staticmethod
-    def format_dependencies(
+    def __format_dependencies(
             checker: Type[T],
             dependencies: Dict[str, str],
             prefix: Optional[Callable[[str, str], RTextBase]] = None
@@ -154,31 +150,29 @@ class MetaInfo(Serializable):
             brief.append(new_line())
             brief.append(bold(tr('plugin.detail.dependency')))
             brief.append(new_line())
-            brief.append(self.formatted_dependencies)
+            brief.append(self.__get_formatted_dependencies())
         if len(self.requirements) != 0:
             brief.append(new_line())
             brief.append(bold(tr('plugin.detail.requirement')))
             brief.append(new_line())
-            brief.append(self.formatted_requirements)
+            brief.append(self.__get_formatted_requirements())
         # brief.append(new_line())
         # brief.append(bold(tr('plugin.detail.release')))
         # brief.append(new_line())
         # brief.append(self.formatted_releases)
         return brief
 
-    @property
-    def formatted_requirements(self) -> RTextBase:
+    def __get_formatted_requirements(self) -> RTextBase:
         requirements = {parse_python_requirement(requirement)[0]: parse_python_requirement(requirement)[1]
                         for requirement in self.requirements}
-        return self.format_dependencies(
+        return self.__format_dependencies(
             PackageDependencyChecker,
             requirements,
             lambda package, requirement: link('- ', 'https://pypi.org/project/' + package).set_styles([])
         )
 
-    @property
-    def formatted_dependencies(self) -> RTextBase:
-        return self.format_dependencies(
+    def __get_formatted_dependencies(self) -> RTextBase:
+        return self.__format_dependencies(
             PluginDependencyChecker,
             self.dependencies,
             lambda plugin_id, requirement: command_run('- ', '!!mpm info {}'.format(plugin_id),
