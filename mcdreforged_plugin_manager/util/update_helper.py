@@ -2,6 +2,7 @@ from typing import Callable, Any, Iterator
 
 from mcdreforged.api.all import *
 
+from mcdreforged_plugin_manager import constants
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.storage.cache import cache
 from mcdreforged_plugin_manager.util.text_util import command_run
@@ -27,7 +28,7 @@ def show_check_update_result(reply: Callable[[RTextBase], Any]):
         for plugin_id, latest_version, local_version in updates:
             plugin = cache.get_plugin_by_id(plugin_id)
             reply(RTextList(command_run(RText(plugin.name).set_color(RColor.yellow).set_styles(RStyle.bold),
-                                        '!!mpm info ' + plugin_id,
+                                        '{} info {}'.format(constants.PREFIX, plugin_id),
                                         tr('plugin.operation.show_info')),
                             ' ',
                             RText('({})'.format(plugin.id)).set_color(RColor.gray)))
@@ -35,6 +36,6 @@ def show_check_update_result(reply: Callable[[RTextBase], Any]):
                                       RText(latest_version).set_color(RColor.green)),
                             ' ',
                             command_run(RText('[↑]').set_color(RColor.green),
-                                        '!!mpm upgrade ' + plugin_id,
+                                        '{} upgrade {}'.format(constants.PREFIX, plugin_id),
                                         tr('update_helper.click_to_upgrade', latest_version))
                             ))

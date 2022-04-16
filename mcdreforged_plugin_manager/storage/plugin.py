@@ -3,13 +3,14 @@ from typing import List, Dict, Optional, Union, Callable, Type, TypeVar, Tuple, 
 import requests
 from mcdreforged.api.all import *
 
+from mcdreforged_plugin_manager import constants
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.dependency_checker import DependencyChecker, DependencyNotFound, InvalidDependency, \
     DependencyNotMet, PackageDependencyChecker, PluginDependencyChecker
 from mcdreforged_plugin_manager.storage.release import ReleaseSummary
 from mcdreforged_plugin_manager.util.mcdr_util import is_plugin_loaded
 from mcdreforged_plugin_manager.util.misc import parse_python_requirement
-from mcdreforged_plugin_manager.util.text_util import italic, parse_markdown, command_run, link, new_line, \
+from mcdreforged_plugin_manager.util.text_util import parse_markdown, command_run, link, new_line, \
     insert_new_lines, size, bold
 from mcdreforged_plugin_manager.util.translation import tr
 
@@ -40,25 +41,25 @@ class MetaInfo(Serializable):
     def __get_primary_action_button(self):
         return (
             command_run('[↓]',
-                        '!!mpm install {}'.format(self.id),
+                        '{} install {}'.format(constants.PREFIX, self.id),
                         tr('plugin.operation.install')).set_color(RColor.green)
             if not is_plugin_loaded(self.id) else
             command_run('[x]',
-                        '!!mpm uninstall {}'.format(self.id),
+                        '{} uninstall {}'.format(constants.PREFIX, self.id),
                         tr('plugin.operation.uninstall')).set_color(RColor.red)
         )
 
     def __get_upgrade_action_button(self):
         success, latest_version, _ = self.check_update()
         return command_run('[↑]',
-                           '!!mpm upgrade {}'.format(self.id),
+                           '{} upgrade {}'.format(constants.PREFIX, self.id),
                            tr('plugin.operation.upgrade', latest_version)).set_color(RColor.green) if success else RText('')
 
     def __get_action_bar(self) -> RTextList:
         return RTextList(
             self.__get_primary_action_button(),
             command_run('[i]',
-                        '!!mpm info {}'.format(self.id),
+                        '{} info {}'.format(constants.PREFIX, self.id),
                         tr('plugin.operation.show_info')).set_color(RColor.aqua),
             self.__get_upgrade_action_button()
         )
@@ -175,7 +176,7 @@ class MetaInfo(Serializable):
         return self.__format_dependencies(
             PluginDependencyChecker,
             self.dependencies,
-            lambda plugin_id, requirement: command_run('- ', '!!mpm info {}'.format(plugin_id),
+            lambda plugin_id, requirement: command_run('- ', '{} info {}'.format(constants.PREFIX, plugin_id),
                                                        tr('plugin.operation.show_info'))
         )
 

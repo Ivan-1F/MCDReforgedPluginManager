@@ -1,5 +1,6 @@
 from mcdreforged.api.all import *
 
+from mcdreforged_plugin_manager import constants
 from mcdreforged_plugin_manager.commands import list_plugins, search, info, install, upgrade, uninstall, check_update, \
     show_help_message
 from mcdreforged_plugin_manager.config import config
@@ -14,7 +15,7 @@ def register_commands(server: PluginServerInterface):
     def get_literal(literal: str):
         return Literal(literal).requires(lambda src, ctx: src.has_permission(config.permission), lambda: tr('permission_denied'))
     server.register_command(
-        Literal('!!mpm')
+        Literal(constants.PREFIX)
         .runs(show_help_message)
         .then(
             get_literal('list')
@@ -83,7 +84,7 @@ def on_load(server: PluginServerInterface, old):
     cache_clock.reset_timer()
     update_helper.show_check_update_result(psi.logger.info)
     register_commands(server)
-    server.register_help_message('!!mpm', tr('help_summary'))
+    server.register_help_message(constants.PREFIX, tr('help_summary'))
 
 
 def on_unload(server: PluginServerInterface):
