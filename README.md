@@ -58,7 +58,6 @@ Follow the comments and modify the config, use `!!MCDR plg reload mcdreforged_pl
 - `!!mpm`: Display MPM help message
 - `!!mpm list [labels]`: List all the plugins. If labels is specified, only plugins with specified labels will be displayed
   `labels` can be a single label or multiple labels split by `,`. Accepted labels: `information`, `tool`, `management`, `api`
-
 - `!!mpm search <query>`: Search plugins based on the keyword
 - `!!mpm info <plugin_id>`: Show detailed information of a plugin
 - `!!mpm install <plugin_id>`: Install a plugin, as well as its plugin dependencies and its required python packages
