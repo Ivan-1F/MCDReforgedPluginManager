@@ -209,9 +209,9 @@ class PluginInstaller(Task):
         for operation in self.operations:
             self.reply(tr('installer.operating', tr(operation.operation.value), operation.name))
             results.append(operation.operate(self))
-        self.reply(tr('installer.operation.reload_mcdr'))
-        psi.refresh_changed_plugins()
         if all(results):
+            self.reply(tr('installer.operation.reload_mcdr'))
+            psi.refresh_changed_plugins()
             self.reply(tr('installer.result.success'))
         else:
             self.reply(tr('installer.result.failed'))
