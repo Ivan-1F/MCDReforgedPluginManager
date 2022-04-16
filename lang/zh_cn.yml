@@ -1,4 +1,17 @@
 mcdreforged_plugin_manager:
+  help_message: |
+    ========== {name} v{version} ==========
+    §6{prefix}§r: 显示 MPM 帮助信息
+    §6{prefix} list §a[labels]§r: 列出所有插件
+    如果 §alabels§r 被指定，只有包含指定标签的插件才会被列出
+    §alabels§r 可以是一个标签或多个被 §6,§r 分割的标签。接受的标签：§6information§r, §6tool§r, §6management§r, §6api§r
+    §6{prefix} search §b<query>§r: 根据关键词搜索插件
+    §6{prefix} info §b<plugin_id>§r: 显示一个插件的详细信息
+    §6{prefix} install §b<plugin_id>§r: 安装一个插件，其依赖的插件和 Python 包将会一并安装
+    §6{prefix} uninstall §b<plugin_id>§r: 卸载一个插件
+    §6{prefix} upgrade §b<plugin_id>§r: 将一个插件更新至最新版本
+    §6{prefix} confirm§r: 确认操作
+    §6{prefix} checkupdate§r: 手动对所有插件检查更新
   permission_denied: §c权限不足
   cache:
     cache: 正在更新插件库索引

@@ -1,6 +1,7 @@
 from mcdreforged.api.all import *
 
-from mcdreforged_plugin_manager.commands import list_plugins, search, info, install, upgrade, uninstall, check_update
+from mcdreforged_plugin_manager.commands import list_plugins, search, info, install, upgrade, uninstall, check_update, \
+    show_help_message
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.operation.task_manager import task_manager
@@ -14,6 +15,7 @@ def register_commands(server: PluginServerInterface):
         return Literal(literal).requires(lambda src, ctx: src.has_permission(config.permission), lambda: tr('permission_denied'))
     server.register_command(
         Literal('!!mpm')
+        .runs(show_help_message)
         .then(
             get_literal('list')
             .runs(lambda src: list_plugins(src))

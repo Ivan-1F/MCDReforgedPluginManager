@@ -2,6 +2,7 @@ import functools
 from typing import Optional, Union, List, Callable
 from mcdreforged.api.all import *
 
+from mcdreforged_plugin_manager.constants import meta
 from mcdreforged_plugin_manager.operation.installer import PluginInstaller
 from mcdreforged_plugin_manager.operation.task_manager import task_manager
 from mcdreforged_plugin_manager.operation.uninstaller import PluginUninstaller
@@ -31,6 +32,10 @@ def ensure_plugin_installed(func: Callable):
         func(source, plugin_id, *args, **kwargs)
 
     return wrapper
+
+
+def show_help_message(source: CommandSource):
+    source.reply(tr('help_message', prefix='!!mpm', name=meta.name, version=meta.version))
 
 
 def list_plugins(source: CommandSource, labels: Optional[Union[type(None), str, List[str]]] = None):
