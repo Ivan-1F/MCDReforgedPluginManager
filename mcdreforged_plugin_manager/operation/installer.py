@@ -203,6 +203,7 @@ class PluginInstaller(Task):
         if self.__init_operations():
             self.__show_confirm()
 
+    @new_thread('mpm-installer')
     def run(self):
         results = []
         for operation in self.operations:
