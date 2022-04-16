@@ -27,7 +27,7 @@ class MetaInfo(Serializable):
 
     def __get_formatted_description(self) -> RTextBase:
         if not self.description:
-            return italic(tr('plugin.no_description'))
+            return tr('plugin.no_description')
         language = psi.get_mcdr_language()
         text = self.description.get(language)
         if text is None:

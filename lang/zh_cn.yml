@@ -10,7 +10,7 @@ mcdreforged_plugin_manager:
     status:
       installed: §a已安装 {0}
       uninstalled: §c未安装
-    no_description: 无简介
+    no_description: §o无简介
     author: '§l作者: §r{0}'
     label: '§l标签: §r{0}'
     not_found: §c未找到插件 {0}
@@ -41,8 +41,8 @@ mcdreforged_plugin_manager:
     newer_version_available: '插件 {0} 有新版本可用: {1}'
     confirm:
       title: '§l{0}操作确认:'
-      plugin_list: '§l将§3安装§r或§b更新§r以下插件:'
-      package_list: '§l将§3安装§r或§b更新§r以下包:'
+      plugin_list: '§l将§3安装§r§l或§b更新§r§l以下插件:'
+      package_list: '§l将§3安装§r§l或§b更新§r§l以下包:'
       footer: 请使用 {0} 确认操作
       command_hover: 确认
     operating: 正在 {0} {1}
@@ -75,6 +75,6 @@ mcdreforged_plugin_manager:
     nothing_to_confirm: §c没有什么需要确认的
 
   update_helper:
-    title: '§l以下插件需要更新: '
+    title: '§l以下插件需要更新:'
     all_up_to_date: §a所有插件均为最新版
-    click_to_upgrade: 点击更新至 {0}
+    click_to_upgrade: 更新至 {0}

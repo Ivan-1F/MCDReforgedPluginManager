@@ -1,0 +1,80 @@
+mcdreforged_plugin_manager:
+  permission_denied: §cPermission denied
+  cache:
+    cache: Updating plugin index cache
+    cached: Plugin index updated; {0} new plugins
+    exception: 'Failed to update plugin index: {0}'
+    clock:
+      started: 'Plugin index update clock started, interval: {0} seconds'
+  plugin:
+    status:
+      installed: §aInstalled {0}
+      uninstalled: §cUninstalled
+    no_description: §oNo description
+    author: '§lAuthor: §r{0}'
+    label: '§lLabels: §r{0}'
+    not_found: §cPlugin {0} not found
+    not_installed: §cPlugin {0} uninstalled
+    operation:
+      install: Install
+      uninstall: Uninstall
+      upgrade: Upgrade to {0}
+      show_info: Show information
+    detail:
+      dependency: 'Plugin dependency:'
+      requirement: 'Python package requirements:'
+      release: 'Releases:'
+    release:
+      failed_to_get_release: '§cFailed to get release information: {0}'
+  dependency:
+    dependency_not_found: Dependency {0} not found
+    dependency_not_met: Dependency {0} does not meet version requirement {1}, found version {2}
+    invalid_dependency: 'Invalid dependency {0}: {1}'
+    satisfied: Dependency satisfied
+    operation:
+      install: §3Install§r
+      upgrade: §bUpgrade§r
+
+  installer:
+    already_installed: Plugin {0} is already installed
+    already_up_to_date: Plugin {0} is already up to date
+    newer_version_available: 'New version of plugin {0} is available: {1}'
+    confirm:
+      title: '§l{0} operation confirm:'
+      plugin_list: '§l§3Installing§r§l or §bupgrading§r§l the following plugins:'
+      package_list: '§l§3Installing§r§l or §bupgrading§r§l the following packages:'
+      footer: Use {0} to confirm the operation
+      command_hover: Confirm
+    operating: '{0} {1}'
+    operation:
+      plugin:
+        downloading: Downloading §6{0}
+        removing: Removing §6{0}
+        exception: '§cException occurred: {0}'
+      package:
+        operating_with_pip: '{0} §6{1}§r using pip'
+        exception: '§cException occurred: {0}'
+      reload_mcdr: Reloading MCDR
+    result:
+      success: §aSuccess
+      failed: §cFailed
+
+  uninstaller:
+    title: '§l§cUninstall§r §loperation confirm§r: Uninstalling §6{0}'
+    dependency_warning: '§l§cWarning! The following dependencies depends on {0}: '
+    confirm: Use {0} to confirm the operation
+    step:
+      unload_plugin: Unloading {0} from MCDR
+      remove_file: Removing §6{0}
+      reload_mcdr: Reloading MCDR
+    result:
+      success: §aSuccess
+      failed: §cFailed
+
+  task_manager:
+    nothing_to_confirm: §cNothing to confirm
+
+  update_helper:
+    title: '§lThe following plugins need to be upgraded:'
+    all_up_to_date: §aAll plugins are up to date
+    click_to_upgrade: Upgrade to {0}
