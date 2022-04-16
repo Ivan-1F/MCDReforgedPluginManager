@@ -9,6 +9,8 @@ MCDReforgedPluginManager（简称为 `mpm`）是一个基于 [PluginCatalogue](h
 
 MCDReforgedPluginManager 从 [PluginCatalogue](https://github.com/MCDReforged/PluginCatalogue) 获取插件数据并定时更新
 
+![overview](./screenshots/zh_cn.gif)
+
 ## 功能
 
 - 依赖检查

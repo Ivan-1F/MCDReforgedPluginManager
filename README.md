@@ -9,6 +9,8 @@ MCDReforgedPluginManager (short for `mpm`) is a MCDReforged plugin manager based
 
 MCDReforgedPluginManager fetch plugin metadata from [PluginCatalogue](https://github.com/MCDReforged/PluginCatalogue) and update automatically at regular intervals
 
+![overview](./screenshots/en_us.gif)
+
 ## Features
 
 - Dependency checking
