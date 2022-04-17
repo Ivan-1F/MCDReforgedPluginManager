@@ -25,7 +25,7 @@ MCDReforgedPluginManager fetch plugin metadata from [PluginCatalogue](https://gi
 
 ## Configuration
 
-The configuration file is `config/mcdreforged_plugin_manager/config.json`
+The configuration file is `config/mcdreforged_plugin_manager/config.yml`
 
 The commented default config file will be generated when mpm is loaded for the first time:
 

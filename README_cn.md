@@ -25,7 +25,7 @@ MCDReforgedPluginManager 从 [PluginCatalogue](https://github.com/MCDReforged/Pl
 
 ## 配置
 
-配置文件位于 `config/mcdreforged_plugin_manager/config.json`
+配置文件位于 `config/mcdreforged_plugin_manager/config.yml`
 
 带注释的默认配置文件将在 mpm 第一次被加载时自动生成：
 
