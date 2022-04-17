@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 from abc import ABC, abstractmethod
@@ -6,6 +7,7 @@ from typing import List, Optional
 import requests
 from mcdreforged.api.all import *
 
+from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.dependency_checker import DependencyOperation, PackageDependencyChecker, \
     DependencyError, PluginDependencyChecker
@@ -35,12 +37,14 @@ class InstallerPluginOperation(InstallerOperation):
         super().__init__(name, operation)
         self.operation = operation
         self.name = name
+        self.install_path = config.install_path
 
     def operate(self, installer: 'PluginInstaller') -> bool:
         if self.operation == DependencyOperation.UPGRADE:
             installer.reply(indented(
                 tr('installer.operation.plugin.removing', psi.get_plugin_file_path(self.name))
             ))
+            self.install_path = os.path.dirname(psi.get_plugin_file_path(self.name))
             remove_plugin_file(self.name)
         if self.operation in [DependencyOperation.INSTALL, DependencyOperation.UPGRADE]:
             try:
@@ -58,7 +62,7 @@ class InstallerPluginOperation(InstallerOperation):
                 tr('installer.operation.plugin.downloading', filename)
             ))
             try:
-                download_file(url, './plugins/' + filename)
+                download_file(url, os.path.join(self.install_path, filename))
             except requests.RequestException as e:
                 installer.reply(indented(
                     tr('installer.operation.plugin.exception', e), 2

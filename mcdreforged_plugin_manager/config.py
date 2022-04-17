@@ -15,6 +15,7 @@ class Configure(Serializable):
     timeout: int = 15
     cache_interval: int = 30
     check_update: bool = True
+    install_path: str = 'plugins'
 
     @property
     def get_source(self) -> str:
