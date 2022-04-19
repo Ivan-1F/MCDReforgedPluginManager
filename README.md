@@ -55,6 +55,10 @@ cache_interval: 2
 # If set to true, the plugin will check plugin updates after each scheduled cache
 # 若设为 true，插件将在每次定时更新插件索引后自动检查更新
 check_update: true
+
+# The path to install the plugin, should be one of the value of 'plugin_directories' of the MCDR config
+# 安装插件的位置，应是 MCDR 配置中的 'plugin_directories' 中的一个
+install_path: plugins
 ```
 
 Follow the comments and modify the config, use `!!MCDR plg reload mcdreforged_plugin_manager` to reload the config
@@ -62,8 +66,9 @@ Follow the comments and modify the config, use `!!MCDR plg reload mcdreforged_pl
 ## Commands
 
 - `!!mpm`: Display MPM help message
-- `!!mpm list [labels]`: List all the plugins. If labels is specified, only plugins with specified labels will be displayed
-  `labels` can be a single label or multiple labels split by `,`. Accepted labels: `information`, `tool`, `management`, `api`
+- `!!mpm list [labels]`: List all the plugins. 
+  - If labels is specified, only plugins with specified labels will be displayed
+  - `labels` can be a single label or multiple labels split by `,`. Accepted labels: `information`, `tool`, `management`, `api`
 - `!!mpm search <query>`: Search plugins based on the keyword
 - `!!mpm info <plugin_id>`: Show detailed information of a plugin
 - `!!mpm install <plugin_id>`: Install a plugin, as well as its plugin dependencies and its required python packages
