@@ -150,17 +150,15 @@ class PluginInstaller(Task):
                     self.reply(tr('installer.already_installed', plugin_id))
                 success, latest_version, local_version = cache.get_plugin_by_id(plugin_id).check_update()
                 if success:
-                    if not self.upgrade:
-                        self.reply(tr(
-                            'installer.newer_version_available',
-                            plugin_id,
-                            latest_version
-                        ))
-                        self.upgrade = True
+                    self.reply(tr(
+                        'installer.newer_version_available',
+                        plugin_id,
+                        latest_version
+                    ))
+                    self.upgrade = True
                 else:
-                    if not self.upgrade:
-                        self.reply(tr('installer.already_up_to_date', plugin_id))
-                        continue
+                    self.reply(tr('installer.already_up_to_date', plugin_id))
+                    continue
             for operation in get_operations(
                 plugin_id, DependencyOperation.UPGRADE if self.upgrade else DependencyOperation.INSTALL
             ):
