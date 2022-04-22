@@ -23,6 +23,18 @@ def ensure_plugin_id(func: Callable):
     return wrapper
 
 
+def ensure_plugin_ids(func: Callable):
+    @functools.wraps(func)
+    def wrapper(source: CommandSource, plugin_ids: List[str], *args, **kwargs):
+        for plugin_id in plugin_ids:
+            if not cache.is_plugin_present(plugin_id):
+                source.reply(tr('plugin.not_found', plugin_id))
+                return
+        func(source, plugin_ids, *args, **kwargs)
+
+    return wrapper
+
+
 def ensure_plugin_installed(func: Callable):
     @functools.wraps(func)
     def wrapper(source: CommandSource, plugin_id: str, *args, **kwargs):
@@ -30,6 +42,18 @@ def ensure_plugin_installed(func: Callable):
             source.reply(tr('plugin.not_installed', plugin_id))
             return
         func(source, plugin_id, *args, **kwargs)
+
+    return wrapper
+
+
+def ensure_plugins_installed(func: Callable):
+    @functools.wraps(func)
+    def wrapper(source: CommandSource, plugin_ids: List[str], *args, **kwargs):
+        for plugin_id in plugin_ids:
+            if not is_plugin_loaded(plugin_id):
+                source.reply(tr('plugin.not_installed', plugin_id))
+                return
+        func(source, plugin_ids, *args, **kwargs)
 
     return wrapper
 
@@ -55,16 +79,16 @@ def info(source: CommandSource, plugin_id: str):
     source.reply(cache.get_plugin_by_id(plugin_id).detail)
 
 
-@ensure_plugin_id
-def install(source: CommandSource, plugin_id: str):
-    installer = PluginInstaller(plugin_id, source, upgrade=False)
+@ensure_plugin_ids
+def install(source: CommandSource, plugin_ids: List[str]):
+    installer = PluginInstaller(plugin_ids, source, upgrade=False)
     task_manager.manage_task(installer)
 
 
-@ensure_plugin_installed
-@ensure_plugin_id
-def upgrade(source: CommandSource, plugin_id: str):
-    installer = PluginInstaller(plugin_id, source, upgrade=True)
+@ensure_plugins_installed
+@ensure_plugin_ids
+def upgrade(source: CommandSource, plugin_ids: List[str]):
+    installer = PluginInstaller(plugin_ids, source, upgrade=True)
     task_manager.manage_task(installer)
 
 

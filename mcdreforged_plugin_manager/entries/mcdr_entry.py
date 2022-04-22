@@ -44,17 +44,17 @@ def register_commands(server: PluginServerInterface):
         .then(
             get_literal('install')
             .then(
-                Text('plugin_id')
+                GreedyText('plugin_ids')
                 .suggests(cache.get_plugin_ids)
-                .runs(lambda src, ctx: install(src, ctx['plugin_id']))
+                .runs(lambda src, ctx: install(src, ctx['plugin_ids'].split(' ')))
             )
         )
         .then(
             get_literal('upgrade')
             .then(
-                Text('plugin_id')
+                GreedyText('plugin_ids')
                 .suggests(psi.get_plugin_list)
-                .runs(lambda src, ctx: upgrade(src, ctx['plugin_id']))
+                .runs(lambda src, ctx: upgrade(src, ctx['plugin_ids'].split(' ')))
             )
         )
         .then(

@@ -132,9 +132,9 @@ def get_operations(plugin_id: str, self_operation: DependencyOperation) -> List[
 
 
 class PluginInstaller(Task):
-    def __init__(self, plugin_id: str, source: CommandSource, upgrade=False):
+    def __init__(self, plugin_ids: List[str], source: CommandSource, upgrade=False):
         self.upgrade = upgrade
-        self.plugin_id = plugin_id
+        self.plugin_ids = plugin_ids
         self.reply = source.reply
         self.operations: List[InstallerOperation] = []
         self.__cancel_flag = False
@@ -144,25 +144,29 @@ class PluginInstaller(Task):
         self.operations.append(operation)
 
     def __init_operations(self) -> bool:
-        if is_plugin_loaded(self.plugin_id):
-            if not self.upgrade:
-                self.reply(tr('installer.already_installed', self.plugin_id))
-            success, latest_version, local_version = cache.get_plugin_by_id(self.plugin_id).check_update()
-            if success:
+        for plugin_id in self.plugin_ids:
+            if is_plugin_loaded(plugin_id):
                 if not self.upgrade:
-                    self.reply(tr(
-                        'installer.newer_version_available',
-                        self.plugin_id,
-                        latest_version
-                    ))
-                    self.upgrade = True
-            else:
-                if not self.upgrade:
-                    self.reply(tr('installer.already_up_to_date', self.plugin_id))
-                    return False
-        self.operations = get_operations(self.plugin_id,
-                                         DependencyOperation.UPGRADE if self.upgrade else DependencyOperation.INSTALL)
-        return True
+                    self.reply(tr('installer.already_installed', plugin_id))
+                success, latest_version, local_version = cache.get_plugin_by_id(plugin_id).check_update()
+                if success:
+                    if not self.upgrade:
+                        self.reply(tr(
+                            'installer.newer_version_available',
+                            plugin_id,
+                            latest_version
+                        ))
+                        self.upgrade = True
+                else:
+                    if not self.upgrade:
+                        self.reply(tr('installer.already_up_to_date', plugin_id))
+                        continue
+            for operation in get_operations(
+                plugin_id, DependencyOperation.UPGRADE if self.upgrade else DependencyOperation.INSTALL
+            ):
+                if operation.name not in [op.name for op in self.operations]:
+                    self.operations.append(operation)
+        return len(self.operations) != 0
 
     def __format_plugins_confirm(self) -> Optional[RTextBase]:
         ops = [op for op in self.operations if isinstance(op, InstallerPluginOperation)]
