@@ -60,9 +60,9 @@ def register_commands(server: PluginServerInterface):
         .then(
             get_literal('uninstall')
             .then(
-                Text('plugin_id')
+                GreedyText('plugin_ids')
                 .suggests(psi.get_plugin_list)
-                .runs(lambda src, ctx: uninstall(src, ctx['plugin_id']))
+                .runs(lambda src, ctx: uninstall(src, ctx['plugin_ids'].split(' ')))
             )
         )
         .then(

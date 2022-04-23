@@ -92,9 +92,9 @@ def upgrade(source: CommandSource, plugin_ids: List[str]):
     task_manager.manage_task(installer)
 
 
-@ensure_plugin_installed
-def uninstall(source: CommandSource, plugin_id: str):
-    uninstaller = PluginUninstaller(plugin_id, source)
+@ensure_plugins_installed
+def uninstall(source: CommandSource, plugin_ids: List[str]):
+    uninstaller = PluginUninstaller(plugin_ids, source)
     task_manager.manage_task(uninstaller)
 
 
