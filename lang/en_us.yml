@@ -7,9 +7,9 @@ mcdreforged_plugin_manager:
     §alabels§r can be a single label or multiple labels split by §6,§r. Accepted labels: §6information§r, §6tool§r, §6management§r, §6api§r
     §6{prefix} search §b<query>§r: Search plugins based on the keyword
     §6{prefix} info §b<plugin_id>§r: Show detailed information of a plugin
-    §6{prefix} install §b<plugin_id>§r: Install a plugin, as well as its plugin dependencies and its required python packages
-    §6{prefix} uninstall §b<plugin_id>§r: Uninstall a plugin
-    §6{prefix} upgrade §b<plugin_id>§r: Upgrade a plugin to the latest version
+    §6{prefix} install §b<plugin_ids>§r: Install plugins, as well as plugin dependencies and required python packages
+    §6{prefix} uninstall §b<plugin_ids>§r: Uninstall plugins
+    §6{prefix} upgrade §b<plugin_ids>§r: Upgrade plugins to the latest version
     §6{prefix} confirm§r: Confirm the operation
     §6{prefix} checkupdate§r: Manually check update for all installed plugins
   help_summary: Manage your mcdreforged plugins with ease

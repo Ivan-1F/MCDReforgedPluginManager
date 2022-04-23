@@ -71,8 +71,8 @@ Follow the comments and modify the config, use `!!MCDR plg reload mcdreforged_pl
   - `labels` can be a single label or multiple labels split by `,`. Accepted labels: `information`, `tool`, `management`, `api`
 - `!!mpm search <query>`: Search plugins based on the keyword
 - `!!mpm info <plugin_id>`: Show detailed information of a plugin
-- `!!mpm install <plugin_id>`: Install a plugin, as well as its plugin dependencies and its required python packages
-- `!!mpm uninstall <plugin_id>`: Uninstall a plugin
-- `!!mpm upgrade <plugin_id>`: Upgrade a plugin to the latest version
+- `!!mpm install <plugin_ids>`: Install plugins, as well plugin dependencies and required python packages
+- `!!mpm uninstall <plugin_ids>`: Uninstall plugins
+- `!!mpm upgrade <plugin_ids>`: Upgrade plugins to the latest version
 - `!!mpm confirm`: Confirm the operation
 - `!!mpm checkupdate`: Manually check update for all installed plugins

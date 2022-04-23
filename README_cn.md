@@ -71,8 +71,8 @@ install_path: plugins
   - `labels` 可以是一个标签或多个被 `,` 分割的标签。接受的标签：`information`, `tool`, `management`, `api`
 - `!!mpm search <query>`: 根据关键词搜索插件
 - `!!mpm info <plugin_id>`: 显示一个插件的详细信息
-- `!!mpm install <plugin_id>`: 安装一个插件，其依赖的插件和 Python 包将会一并安装
-- `!!mpm uninstall <plugin_id>`: 卸载一个插件
-- `!!mpm upgrade <plugin_id>`: 将一个插件更新至最新版本
+- `!!mpm install <plugin_ids>`: 安装插件，其依赖的插件和 Python 包将会一并安装
+- `!!mpm uninstall <plugin_ids>`: 卸载插件
+- `!!mpm upgrade <plugin_ids>`: 将插件更新至最新版本
 - `!!mpm confirm`: 确认操作
 - `!!mpm checkupdate`: 手动对所有插件检查更新
