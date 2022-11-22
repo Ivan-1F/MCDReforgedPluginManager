@@ -59,6 +59,12 @@ check_update: true
 # The path to install the plugin, should be one of the value of 'plugin_directories' of the MCDR config
 # 安装插件的位置，应是 MCDR 配置中的 'plugin_directories' 中的一个
 install_path: plugins
+
+# Proxy addresses, both http and https is optional
+# 代理地址，http 与 https 都是可选的
+proxy:
+  http:
+  https:
 ```
 
 根据注释修改配置，使用 `!!MCDR plg reload mcdreforged_plugin_manager` 重载配置
