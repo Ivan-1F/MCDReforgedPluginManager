@@ -53,7 +53,7 @@ class Cache(PluginMetaInfoStorage):
         before = self.plugin_amount
         try:
             psi.logger.info(tr('cache.cache'))
-            data = requests.get(config.get_source + '/plugins.json', timeout=config.timeout).json()
+            data = requests.get(config.get_source + '/plugins.json', timeout=config.timeout, proxies=config.proxy).json()
             self.update_from(data)
             self.save()
         except requests.RequestException as e:

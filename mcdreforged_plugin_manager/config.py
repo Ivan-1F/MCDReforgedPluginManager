@@ -1,9 +1,15 @@
 import os
+from typing import Optional
 
 from mcdreforged.api.all import *
 from ruamel.yaml import YAML, CommentedMap
 
 from mcdreforged_plugin_manager.constants import psi
+
+
+class ProxyConfig(Serializable):
+    http: Optional[str] = None
+    https: Optional[str] = None
 
 
 class Configure(Serializable):
@@ -16,6 +22,7 @@ class Configure(Serializable):
     cache_interval: int = 30
     check_update: bool = True
     install_path: str = 'plugins'
+    proxy: ProxyConfig = ProxyConfig.get_default()
 
     @property
     def get_source(self) -> str:
