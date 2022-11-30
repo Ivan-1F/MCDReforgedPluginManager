@@ -25,6 +25,14 @@ class Configure(Serializable):
     proxy: ProxyConfig = ProxyConfig.get_default()
 
     @property
+    def request_proxy(self) -> dict:
+        param = {}
+        for k, v in self.proxy.serialize().items():
+            if v is not None:
+                param[k] = v
+        return param if param else None
+
+    @property
     def get_source(self) -> str:
         return self.source.rstrip('/')
 
