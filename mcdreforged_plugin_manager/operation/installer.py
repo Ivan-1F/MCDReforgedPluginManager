@@ -41,11 +41,7 @@ class InstallerPluginOperation(InstallerOperation):
 
     def operate(self, installer: 'PluginInstaller') -> bool:
         if self.operation == DependencyOperation.UPGRADE:
-            installer.reply(indented(
-                tr('installer.operation.plugin.removing', psi.get_plugin_file_path(self.name))
-            ))
             self.install_path = os.path.dirname(psi.get_plugin_file_path(self.name))
-            remove_plugin_file(self.name)
         if self.operation in [DependencyOperation.INSTALL, DependencyOperation.UPGRADE]:
             try:
                 summary = ReleaseSummary.of(self.name)
@@ -58,16 +54,26 @@ class InstallerPluginOperation(InstallerOperation):
             asset = release.get_mcdr_assets()[0]
             url = asset.browser_download_url
             filename = asset.name
+            temp_filename = filename + '.temp'
+            download_filename = temp_filename if self.operation == DependencyOperation.UPGRADE else filename
+            download_path = os.path.join(self.install_path, download_filename)
             installer.reply(indented(
                 tr('installer.operation.plugin.downloading', filename)
             ))
             try:
-                download_file(url, os.path.join(self.install_path, filename))
+                download_file(url, download_path)
             except requests.RequestException as e:
                 installer.reply(indented(
                     tr('installer.operation.plugin.exception', e), 2
                 ))
                 return False
+            else:
+                if self.operation == DependencyOperation.UPGRADE:
+                    installer.reply(indented(
+                        tr('installer.operation.plugin.removing', psi.get_plugin_file_path(self.name))
+                    ))
+                    remove_plugin_file(self.name)
+                    os.rename(download_path, os.path.join(self.install_path, filename))
         return True
 
 
