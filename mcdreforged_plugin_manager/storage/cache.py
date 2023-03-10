@@ -64,7 +64,7 @@ class Cache(PluginMetaInfoStorage):
     def save(self):
         if not os.path.isdir(os.path.dirname(self.CACHE_PATH)):
             os.makedirs(os.path.dirname(self.CACHE_PATH))
-        with open(self.CACHE_PATH, 'w+') as f:
+        with open(self.CACHE_PATH, 'w+', encoding='utf8') as f:
             json.dump(self.serialize(), f, indent=4, ensure_ascii=False)
 
     @classmethod
@@ -72,7 +72,7 @@ class Cache(PluginMetaInfoStorage):
         if not os.path.isfile(cls.CACHE_PATH):
             obj = cls()
         else:
-            with open(cls.CACHE_PATH, 'r') as f:
+            with open(cls.CACHE_PATH, 'r', encoding='utf8') as f:
                 data = json.load(f)
                 obj = cls.deserialize(data)
         return obj
