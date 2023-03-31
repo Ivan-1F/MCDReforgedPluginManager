@@ -193,7 +193,7 @@ class PluginMetaInfoStorage(Serializable):
     plugin_amount: int = 0
     plugins: Dict[str, MetaInfo] = {}  # plugin id -> plugin meta
 
-    def get_plugins_by_labels(self, labels: Optional[Union[type(None), str, List[str]]] = None) -> Iterable[MetaInfo]:
+    def get_plugins_by_labels(self, labels: Optional[Union[None, str, List[str]]] = None) -> Iterable[MetaInfo]:
         if labels is None:
             labels = ['information', 'tool', 'management', 'api']
         if isinstance(labels, str):
