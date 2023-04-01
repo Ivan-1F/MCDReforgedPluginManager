@@ -10,6 +10,7 @@ from mcdreforged.api.all import *
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.storage.plugin import PluginMetaInfoStorage
+from mcdreforged_plugin_manager.util.misc import serializable_update_from
 from mcdreforged_plugin_manager.util.translation import tr
 
 
@@ -54,7 +55,7 @@ class Cache(PluginMetaInfoStorage):
         try:
             psi.logger.info(tr('cache.cache'))
             data = requests.get(config.get_source + '/plugins.json', timeout=config.timeout, proxies=config.request_proxy).json()
-            self.update_from(data)
+            serializable_update_from(self, data)
             self.save()
         except requests.RequestException as e:
             psi.logger.warning(tr('cache.exception', e))
