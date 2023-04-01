@@ -49,6 +49,13 @@ class Cache(PluginMetaInfoStorage):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    def __insert_labels(self, data: dict):
+        plugin_info: dict = data['plugin_info']
+        for plugin_id, info in plugin_info.items():
+            labels = info['labels']
+            if plugin_id in self.plugins:
+                self.plugins[plugin_id].labels = labels
+
     @new_thread('mpm-cache')
     def cache(self):
         before = self.plugin_amount
@@ -56,6 +63,7 @@ class Cache(PluginMetaInfoStorage):
             psi.logger.info(tr('cache.cache'))
             data = requests.get(config.get_source + '/plugins.json', timeout=config.timeout, proxies=config.request_proxy).json()
             serializable_update_from(self, data)
+            self.__insert_labels(data)
             self.save()
         except requests.RequestException as e:
             psi.logger.warning(tr('cache.exception', e))
