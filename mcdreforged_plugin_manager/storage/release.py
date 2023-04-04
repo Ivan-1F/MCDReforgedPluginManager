@@ -28,10 +28,8 @@ class ReleaseInfo(Serializable):
 
 
 class ReleaseSummary(Serializable):
-    schema_version: int = None
     id: str
     latest_version: str
-    etag: str = ''
     releases: List[ReleaseInfo]
 
     def get_latest_release(self) -> Optional[ReleaseInfo]:
