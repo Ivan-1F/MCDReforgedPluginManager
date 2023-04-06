@@ -50,6 +50,7 @@ mcdreforged_plugin_manager:
       upgrade: §b更新§r
 
   installer:
+    cannot_install_self: §c无法安装或更新 MPM 自身
     already_installed: 插件 {0} 已安装
     already_up_to_date: 插件 {0} 已为最新版
     newer_version_available: '插件 {0} 有新版本可用: {1}'
@@ -74,6 +75,7 @@ mcdreforged_plugin_manager:
       failed: §c操作失败
 
   uninstaller:
+    cannot_uninstall_self: §c无法卸载 MPM 自身
     title: '§l§c卸载§r§l操作确认§r: 将卸载 §6{0}'
     dependency_warning: '§l§c警告！以下插件依赖于 {0}: '
     confirm: 请使用 {0} 确认操作

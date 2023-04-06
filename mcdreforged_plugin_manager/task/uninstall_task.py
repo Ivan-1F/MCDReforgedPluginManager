@@ -2,14 +2,15 @@ import functools
 import os
 from typing import Iterable, List
 
-from mcdreforged.api.all import *
+from mcdreforged.api.decorator import new_thread
+from mcdreforged.command.command_source import CommandSource
 
-from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.operation.task_manager import Task
-from mcdreforged_plugin_manager.texts import CONFIRM_COMMAND_TEXT
+from mcdreforged_plugin_manager.constants import psi, meta
 from mcdreforged_plugin_manager.storage.cache import cache
+from mcdreforged_plugin_manager.task.task_manager import Task, task_manager
+from mcdreforged_plugin_manager.texts import CONFIRM_COMMAND_TEXT
 from mcdreforged_plugin_manager.util.mcdr_util import unload_plugin
-from mcdreforged_plugin_manager.util.translation import tr
+from mcdreforged_plugin_manager.util.translation_util import tr
 
 
 def get_plugins_depend_on(plugin_id: str) -> Iterable[str]:
@@ -21,7 +22,7 @@ def get_plugins_depend_on(plugin_id: str) -> Iterable[str]:
         else:
             if other is None:
                 continue
-            if plugin_id in other.dependencies.keys():
+            if plugin_id in other.meta.dependencies.keys():
                 yield other_id
 
 
@@ -31,7 +32,7 @@ class PluginUninstaller(Task):
         self.plugin_ids = plugin_ids
         super().__init__()
 
-    @new_thread('mpm-installer')
+    @new_thread('MPMUninstall')
     def run(self):
         success = True
         for plugin_id in self.plugin_ids:
@@ -51,6 +52,15 @@ class PluginUninstaller(Task):
     def init(self):
         def cmp(a: str, b: str):
             return -1 if a in list(get_plugins_depend_on(b)) else 1
+
+        # don't operate on self (mcdreforged_plugin_manager)
+        if meta.id in self.plugin_ids:
+            if len(self.plugin_ids) == 1:  # ['mcdreforged_plugin_manager']
+                self.reply(tr('uninstaller.cannot_uninstall_self'))
+                task_manager.clear_task()
+                return
+            else:
+                self.plugin_ids.remove(meta.id)
 
         # sort so plugins with no other plugin depend on will be uninstalled first
         self.plugin_ids = sorted(self.plugin_ids, key=functools.cmp_to_key(cmp))

@@ -1,12 +1,12 @@
-from abc import ABC, abstractmethod
-from enum import Enum
+from abc import ABC
+from enum import Enum, unique
 
 from mcdreforged.plugin.meta.version import VersionRequirement, VersionParsingError
 
 from mcdreforged_plugin_manager.constants import psi
 from mcdreforged_plugin_manager.util.mcdr_util import is_plugin_loaded
-from mcdreforged_plugin_manager.util.misc import get_package_version
-from mcdreforged_plugin_manager.util.translation import tr
+from mcdreforged_plugin_manager.util.misc_util import get_package_version
+from mcdreforged_plugin_manager.util.translation_util import tr
 
 
 class DependencyError(Exception):
@@ -25,6 +25,7 @@ class InvalidDependency(DependencyError):
     pass
 
 
+@unique
 class DependencyOperation(Enum):
     IGNORE = 'dependency.operation.ignore'
     INSTALL = 'dependency.operation.install'
@@ -32,6 +33,9 @@ class DependencyOperation(Enum):
 
 
 class DependencyChecker(ABC):
+    """
+    A checker to check if the local dependency met the requirement
+    """
     def __init__(self, name: str, requirement: str):
         self.name = name
         self.requirement = requirement
@@ -39,13 +43,12 @@ class DependencyChecker(ABC):
     def _check_version(self, version: str):
         try:
             if not VersionRequirement(self.requirement).accept(version):
-                raise DependencyNotFound(tr('dependency.dependency_not_met', self.name, self.requirement, version))
+                raise DependencyNotMet(tr('dependency.dependency_not_met', self.name, self.requirement, version))
         except VersionParsingError as e:
             raise InvalidDependency(tr('dependency.invalid_dependency', self.name, e))
 
-    @abstractmethod
     def check(self):
-        pass
+        raise NotImplementedError()
 
     def get_operation(self) -> DependencyOperation:
         try:

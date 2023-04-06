@@ -50,6 +50,7 @@ mcdreforged_plugin_manager:
       upgrade: §bUpgrade§r
 
   installer:
+    cannot_install_self: §cCannot install or upgrade MPM itself
     already_installed: Plugin {0} is already installed
     already_up_to_date: Plugin {0} is already up to date
     newer_version_available: 'New version of plugin {0} is available: {1}'
@@ -74,6 +75,7 @@ mcdreforged_plugin_manager:
       failed: §cFailed
 
   uninstaller:
+    cannot_uninstall_self: §cCannot uninstall MPM itself
     title: '§l§cUninstall§r §loperation confirm§r: Uninstalling §6{0}'
     dependency_warning: '§l§cWarning! The following dependencies depends on {0}: '
     confirm: Use {0} to confirm the operation

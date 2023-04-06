@@ -2,8 +2,6 @@ import importlib
 import re
 from typing import Tuple, Optional
 
-from mcdreforged.api.all import *
-
 
 def get_package_version(package_name: str) -> Optional[str]:
     try:
@@ -34,10 +32,6 @@ def parse_python_requirement(line: str) -> Tuple[str, str]:
             # ~= -> ~, ^= -> ^
             requirement = requirement.replace('=', '')
     return package, requirement
-
-
-def serializable_update_from(target: Serializable, data: dict):
-    vars(target).update(vars(target.deserialize(data)))
 
 
 if __name__ == '__main__':

@@ -1,40 +1,40 @@
 import json
 import os
 import time
-from threading import Thread, Event
+from threading import Event, Thread
 from typing import Callable
 
-import requests
-from mcdreforged.api.all import *
+from mcdreforged.api.decorator import new_thread
 
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi
-from mcdreforged_plugin_manager.storage.plugin import PluginMetaInfoStorage
-from mcdreforged_plugin_manager.util.misc import serializable_update_from
-from mcdreforged_plugin_manager.util.translation import tr
+from mcdreforged_plugin_manager.storage.plugin import PluginStorage, Plugin
+from mcdreforged_plugin_manager.util.file_util import unzip
+from mcdreforged_plugin_manager.util.network_util import download_file
+from mcdreforged_plugin_manager.util.translation_util import tr
 
 
 class CacheClock(Thread):
     def __init__(self, interval: int, event: Callable) -> None:
         super().__init__()
         self.setDaemon(True)
-        self.setName(self.__class__.__name__)
+        self.setName('MPMCacheClock')
         self.interval = interval
         self.event = event
-        self.last_update_time = time.time()
+        self.last_update_time = time.monotonic()
         self.__stop_event = Event()
-        self.__stop_flag = False
 
     def reset_timer(self):
-        self.last_update_time = time.time()
+        self.last_update_time = time.monotonic()
 
     def run(self):
+        self.__stop_event.clear()
         psi.logger.info(tr('cache.clock.started', self.interval))
         while True:
             while True:
                 if self.__stop_event.wait(1):
                     return
-                if time.time() - self.last_update_time > self.interval:
+                if time.monotonic() - self.last_update_time > self.interval:
                     break
             self.event()
             self.reset_timer()
@@ -43,58 +43,58 @@ class CacheClock(Thread):
         self.__stop_event.set()
 
 
-class Cache(PluginMetaInfoStorage):
-    CACHE_PATH = os.path.join(psi.get_data_folder(), 'cache.json')
+class Cache(PluginStorage):
+    CACHE_PATH = psi.get_data_folder()
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def __insert_labels(self, data: dict):
-        plugin_info: dict = data['plugin_info']
-        for plugin_id, info in plugin_info.items():
-            labels = info['labels']
-            if plugin_id in self.plugins:
-                self.plugins[plugin_id].labels = labels
-
-    @new_thread('mpm-cache')
+    @new_thread('MPMCache')
     def cache(self):
         before = self.plugin_amount
+
+        psi.logger.info(tr('cache.cache'))
+        zip_path = os.path.join(self.CACHE_PATH, 'meta.zip')
+
         try:
-            psi.logger.info(tr('cache.cache'))
-            data = requests.get(config.get_source + '/plugins.json', timeout=config.timeout, proxies=config.request_proxy).json()
-            serializable_update_from(self, data)
-            self.__insert_labels(data)
-            self.save()
-        except requests.RequestException as e:
+            download_file(config.source, zip_path)
+            unzip(zip_path, self.CACHE_PATH)
+        except Exception as e:
             psi.logger.warning(tr('cache.exception', e))
         else:
+            os.remove(zip_path)
+            self.load()
             psi.logger.info(tr('cache.cached', self.plugin_amount - before))
 
-    def save(self):
-        if not os.path.isdir(os.path.dirname(self.CACHE_PATH)):
-            os.makedirs(os.path.dirname(self.CACHE_PATH))
-        with open(self.CACHE_PATH, 'w+', encoding='utf8') as f:
-            json.dump(self.serialize(), f, indent=4, ensure_ascii=False)
+            if config.check_update:
+                from mcdreforged_plugin_manager.util import upgrade_helper
+                upgrade_helper.show_check_update_result(psi.logger.info)
 
-    @classmethod
-    def load(cls) -> 'Cache':
-        if not os.path.isfile(cls.CACHE_PATH):
-            obj = cls()
-        else:
-            with open(cls.CACHE_PATH, 'r', encoding='utf8') as f:
-                data = json.load(f)
-                obj = cls.deserialize(data)
-        return obj
+    def load(self):
+        self.plugin_amount = 0
+        self.plugins.clear()
+
+        meta_path = os.path.join(self.CACHE_PATH, 'PluginCatalogue-meta')
+        for plugin_path, _, _ in os.walk(meta_path):
+            def load_plugin_file(filename: str):
+                with open(os.path.join(plugin_path, filename), 'r', encoding='utf8') as f:
+                    return json.load(f)
+
+            if plugin_path == meta_path:
+                continue
+
+            plugin_json = load_plugin_file('plugin.json')
+            meta_json = load_plugin_file('meta.json')
+            release_json = load_plugin_file('release.json')
+
+            plugin = Plugin.create(plugin_json, meta_json, release_json)
+            plugin_id = meta_json['id']
+            self.plugins[plugin_id] = plugin
+            self.plugin_amount += 1
 
 
-cache = Cache.load()
+cache = Cache()
 
 
 def clock_callback():
     cache.cache()
-    if config.check_update:
-        from mcdreforged_plugin_manager.util import update_helper
-        update_helper.show_check_update_result(psi.logger.info)
 
 
 cache_clock = CacheClock(config.cache_interval * 60, event=clock_callback)

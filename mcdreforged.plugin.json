@@ -13,7 +13,7 @@
     "dependencies": {
         "mcdreforged": ">=2.0.0"
     },
-    "entrypoint": "mcdreforged_plugin_manager.entries.mcdr_entry",
+    "entrypoint": "mcdreforged_plugin_manager.entry",
     "resources": [
         "lang", "resources"
     ]

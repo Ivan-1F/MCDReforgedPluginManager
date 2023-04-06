@@ -71,9 +71,9 @@ def insert_between(texts: Union[List[RTextBase], RTextList], insertion: RTextBas
     return result
 
 
-def command_run(message: Any, command: str, text: Optional[Any] = None) -> RTextBase:
-    fancy_text = message.copy() if isinstance(message, RTextBase) else RText(message)
-    return fancy_text.set_hover_text(text).set_click_event(RAction.run_command, command)
+def command_run(message: Any, command: str, hover: Optional[Any] = None) -> RTextBase:
+    fancy_text = get_text(message)
+    return fancy_text.set_hover_text(hover).set_click_event(RAction.run_command, command)
 
 
 def parse_markdown(text: str) -> RTextList:

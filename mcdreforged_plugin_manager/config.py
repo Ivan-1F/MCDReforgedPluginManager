@@ -17,7 +17,7 @@ class Configure(Serializable):
     DEFAULT_CONFIG = psi.open_bundled_file('resources/default_config.yml')
 
     permission: int = PermissionLevel.PHYSICAL_SERVER_CONTROL_LEVEL
-    source: str = 'https://raw.githubusercontent.com/MCDReforged/PluginCatalogue/meta'
+    source: str = 'https://github.com/MCDReforged/PluginCatalogue/archive/refs/heads/meta.zip'
     timeout: int = 15
     cache_interval: int = 30
     check_update: bool = True
@@ -40,9 +40,7 @@ class Configure(Serializable):
     def load(cls) -> 'Configure':
         if not os.path.isfile(cls.CONFIG_PATH):
             cls.__save_default()
-            default = cls.get_default()
-            return default
-        with open(cls.CONFIG_PATH, 'r', encoding='UTF-8') as f:
+        with open(cls.CONFIG_PATH, 'r', encoding='utf8') as f:
             data = YAML().load(f)
         return cls.deserialize(data)
 
@@ -50,7 +48,7 @@ class Configure(Serializable):
     def __save_default(cls):
         if not os.path.isdir(os.path.dirname(cls.CONFIG_PATH)):
             os.makedirs(os.path.dirname(cls.CONFIG_PATH))
-        with open(cls.CONFIG_PATH, 'w', encoding='utf8') as file:
+        with open(cls.CONFIG_PATH, 'w+', encoding='utf8') as file:
             data: CommentedMap = YAML().load(cls.DEFAULT_CONFIG)
             YAML().dump(data, file)
 

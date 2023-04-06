@@ -36,9 +36,3 @@ class ReleaseSummary(Serializable):
         if len(self.releases) > 0:
             return self.releases[0]
         return None
-
-    @classmethod
-    def of(cls, plugin_id: str) -> 'ReleaseSummary':
-        data = requests.get('{}/{}/release.json'.format(config.get_source, plugin_id),
-                            timeout=config.timeout, proxies=config.request_proxy).json()
-        return cls.deserialize(data)

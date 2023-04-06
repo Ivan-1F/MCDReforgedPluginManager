@@ -1,28 +1,23 @@
 from mcdreforged.api.all import *
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Optional
 
-from mcdreforged_plugin_manager.util.translation import tr
+from mcdreforged_plugin_manager.util.translation_util import tr
 
 
 class Task(ABC):
-    def __init__(self):
-        self.init()
-
-    @abstractmethod
     def init(self):
         """
         Called when initializing the task
         """
-        raise NotImplementedError
+        pass
 
-    @abstractmethod
     def run(self):
         """
         Run the task, called after executing !!mpm confirm
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
 
 class TaskManager:
@@ -31,6 +26,7 @@ class TaskManager:
 
     def manage_task(self, task: Task):
         self.pending_task = task
+        self.pending_task.init()
 
     def on_confirm(self, source: CommandSource):
         if self.pending_task is None:
