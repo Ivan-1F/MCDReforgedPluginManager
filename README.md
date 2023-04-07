@@ -37,12 +37,9 @@ The commented default config file will be generated when mpm is loaded for the f
 # 使用 MCDReforgedPluginManager 指令的最低权限
 permission: 4
 
-# The source of plugin catalogue to fetch data
-# 插件仓库数据源
-# Options 选项:
-# - https://raw.githubusercontent.com/MCDReforged/PluginCatalogue/meta
-# - https://cdn.jsdelivr.net/gh/MCDReforged/PluginCatalogue@meta
-source: https://cdn.jsdelivr.net/gh/MCDReforged/PluginCatalogue@meta
+# The source of plugin catalogue to fetch data, should be the url to download the whole meta branch
+# 插件仓库数据源，应是下载整个 meta 分支的链接
+source: https://github.com/MCDReforged/PluginCatalogue/archive/refs/heads/meta.zip
 
 # The timeout for network requests
 # 网络请求的超时时间
