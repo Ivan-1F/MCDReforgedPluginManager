@@ -55,7 +55,7 @@ mcdreforged_plugin_manager:
     already_up_to_date: Plugin {0} is already up to date
     newer_version_available: 'New version of plugin {0} is available: {1}'
     confirm:
-      title: '§l{0} operation confirm:'
+      title: '{0} operation confirm:'
       plugin_list: '§l§3Installing§r§l or §bupgrading§r§l the following plugins:'
       package_list: '§l§3Installing§r§l or §bupgrading§r§l the following packages:'
       footer: Use {0} to confirm the operation
@@ -76,7 +76,7 @@ mcdreforged_plugin_manager:
 
   uninstaller:
     cannot_uninstall_self: §cCannot uninstall MPM itself
-    title: '§l§cUninstall§r §loperation confirm§r: Uninstalling §6{0}'
+    title: '§cUninstall§r operation confirm: Uninstalling §6{0}'
     dependency_warning: '§l§cWarning! The following dependencies depends on {0}: '
     confirm: Use {0} to confirm the operation
     step:
