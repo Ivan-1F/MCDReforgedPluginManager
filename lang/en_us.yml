@@ -49,7 +49,7 @@ mcdreforged_plugin_manager:
       install: §3Install§r
       upgrade: §bUpgrade§r
 
-  installer:
+  install:
     cannot_install_self: §cCannot install or upgrade MPM itself
     already_installed: Plugin {0} is already installed
     already_up_to_date: Plugin {0} is already up to date
@@ -74,10 +74,10 @@ mcdreforged_plugin_manager:
       success: §aSuccess
       failed: §cFailed
 
-  uninstaller:
+  uninstall:
     cannot_uninstall_self: §cCannot uninstall MPM itself
     title: '§cUninstall§r operation confirm: Uninstalling §6{0}'
-    dependency_warning: '§l§cWarning! The following dependencies depends on {0}: '
+    dependency_warning: '§l§cWarning! The following plugins depend on {0}: '
     confirm: Use {0} to confirm the operation
     step:
       unload_plugin: Unloading {0} from MCDR

@@ -56,18 +56,18 @@ class InstallPluginOperation(InstallerOperation):
             temp_filename = filename + '.temp'
             download_filename = temp_filename if self.operation == DependencyOperation.UPGRADE else filename
             download_path = os.path.join(self.install_path, download_filename)
-            installer.reply(indented(tr('installer.operation.plugin.downloading', filename)))
+            installer.reply(indented(tr('install.operation.plugin.downloading', filename)))
             try:
                 download_file(url, download_path)
             except requests.RequestException as e:
                 installer.reply(indented(
-                    tr('installer.operation.plugin.exception', e), 2
+                    tr('install.operation.plugin.exception', e), 2
                 ))
                 return False
             else:
                 if self.operation == DependencyOperation.UPGRADE:
                     installer.reply(indented(
-                        tr('installer.operation.plugin.removing', psi.get_plugin_file_path(self.name))
+                        tr('install.operation.plugin.removing', psi.get_plugin_file_path(self.name))
                     ))
                     remove_plugin_file(self.name)
                     os.rename(download_path, os.path.join(self.install_path, filename))
@@ -83,7 +83,7 @@ class InstallPackageOperation(InstallerOperation):
     def operate(self, installer: 'PluginInstaller') -> bool:
         installer.reply(
             indented(
-                tr('installer.operation.package.operating_with_pip', tr(self.operation.value), self.name)
+                tr('install.operation.package.operating_with_pip', tr(self.operation.value), self.name)
             )
         )
         params = []
@@ -95,7 +95,7 @@ class InstallPackageOperation(InstallerOperation):
             subprocess.check_call(params)
         except subprocess.CalledProcessError as e:
             installer.reply(indented(
-                tr('installer.operation.package.exception', e), 2
+                tr('install.operation.package.exception', e), 2
             ))
             return False
         else:
@@ -155,7 +155,7 @@ class PluginInstaller(Task):
         # don't operate on self (mcdreforged_plugin_manager)
         if meta.id in self.plugin_ids:
             if len(self.plugin_ids) == 1:  # ['mcdreforged_plugin_manager']
-                self.reply(tr('installer.cannot_install_self'))
+                self.reply(tr('install.cannot_install_self'))
                 task_manager.clear_task()
                 return
             else:
@@ -177,17 +177,17 @@ class PluginInstaller(Task):
         for plugin_id in self.plugin_ids:
             if is_plugin_loaded(plugin_id):
                 if not self.upgrade:
-                    self.reply(tr('installer.already_installed', plugin_id))
+                    self.reply(tr('install.already_installed', plugin_id))
                 result = cache.get_plugin_by_id(plugin_id).meta.check_update()
                 if not result.is_latest:
                     self.reply(tr(
-                        'installer.newer_version_available',
+                        'install.newer_version_available',
                         plugin_id,
                         result.latest_version
                     ))
                     self.upgrade = True
                 else:
-                    self.reply(tr('installer.already_up_to_date', plugin_id))
+                    self.reply(tr('install.already_up_to_date', plugin_id))
                     continue
             for operation in get_operations(
                     plugin_id, DependencyOperation.UPGRADE if self.upgrade else DependencyOperation.INSTALL
@@ -201,7 +201,7 @@ class PluginInstaller(Task):
         if len(ops) == 0:
             return None
         return RTextList(
-            tr('installer.confirm.plugin_list'),
+            tr('install.confirm.plugin_list'),
             new_line(),
             insert_between([
                 RText(op.name).set_color(
@@ -216,7 +216,7 @@ class PluginInstaller(Task):
         if len(ops) == 0:
             return None
         return RTextList(
-            tr('installer.confirm.package_list'),
+            tr('install.confirm.package_list'),
             new_line(),
             insert_between([
                 RText(op.name).set_color(
@@ -228,24 +228,24 @@ class PluginInstaller(Task):
 
     def __show_confirm(self):
         self.reply(tr(
-            'installer.confirm.title',
+            'install.confirm.title',
             tr('dependency.operation.upgrade') if self.upgrade else tr('dependency.operation.install')
         ))
 
         self.__reply_if_present(self.__format_plugins_confirm())
         self.__reply_if_present(self.__format_packages_confirm())
 
-        self.reply(tr('installer.confirm.footer', CONFIRM_COMMAND_TEXT))
+        self.reply(tr('install.confirm.footer', CONFIRM_COMMAND_TEXT))
 
     @new_thread('MPMInstall')
     def run(self):
         results = []
         for operation in self.operations:
-            self.reply(tr('installer.operating', tr(operation.operation.value), operation.name))
+            self.reply(tr('install.operating', tr(operation.operation.value), operation.name))
             results.append(operation.operate(self))
         if all(results):
-            self.reply(tr('installer.operation.reload_mcdr'))
+            self.reply(tr('install.operation.reload_mcdr'))
             psi.refresh_changed_plugins()
-            self.reply(tr('installer.result.success'))
+            self.reply(tr('install.result.success'))
         else:
-            self.reply(tr('installer.result.failed'))
+            self.reply(tr('install.result.failed'))

@@ -37,17 +37,17 @@ class PluginUninstaller(Task):
         success = True
         for plugin_id in self.plugin_ids:
             path = psi.get_plugin_file_path(plugin_id)
-            self.reply(tr('uninstaller.step.unload_plugin', plugin_id))
+            self.reply(tr('uninstall.step.unload_plugin', plugin_id))
             unload_plugin(plugin_id)
-            self.reply(tr('uninstaller.step.remove_file', path))
+            self.reply(tr('uninstall.step.remove_file', path))
             os.remove(path)
 
-        self.reply(tr('uninstaller.step.reload_mcdr'))
+        self.reply(tr('uninstall.step.reload_mcdr'))
         psi.refresh_changed_plugins()
         if success:
-            self.reply(tr('uninstaller.result.success'))
+            self.reply(tr('uninstall.result.success'))
         else:
-            self.reply(tr('uninstaller.result.failed'))
+            self.reply(tr('uninstall.result.failed'))
 
     def init(self):
         def cmp(a: str, b: str):
@@ -56,7 +56,7 @@ class PluginUninstaller(Task):
         # don't operate on self (mcdreforged_plugin_manager)
         if meta.id in self.plugin_ids:
             if len(self.plugin_ids) == 1:  # ['mcdreforged_plugin_manager']
-                self.reply(tr('uninstaller.cannot_uninstall_self'))
+                self.reply(tr('uninstall.cannot_uninstall_self'))
                 task_manager.clear_task()
                 return
             else:
@@ -65,13 +65,13 @@ class PluginUninstaller(Task):
         # sort so plugins with no other plugin depend on will be uninstalled first
         self.plugin_ids = sorted(self.plugin_ids, key=functools.cmp_to_key(cmp))
 
-        self.reply(tr('uninstaller.title', ', '.join(self.plugin_ids)))
+        self.reply(tr('uninstall.title', ', '.join(self.plugin_ids)))
 
         for plugin_id in self.plugin_ids:
             plugins = list(get_plugins_depend_on(plugin_id))
             plugins = [plugin for plugin in plugins if plugin not in self.plugin_ids]
             if len(plugins) > 0:
-                self.reply(tr('uninstaller.dependency_warning', plugin_id))
+                self.reply(tr('uninstall.dependency_warning', plugin_id))
                 self.reply(', '.join(plugins))
 
-        self.reply(tr('uninstaller.confirm', CONFIRM_COMMAND_TEXT))
+        self.reply(tr('uninstall.confirm', CONFIRM_COMMAND_TEXT))
