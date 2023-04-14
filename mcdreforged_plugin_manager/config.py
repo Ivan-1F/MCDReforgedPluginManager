@@ -23,6 +23,7 @@ class Configure(Serializable):
     check_update: bool = True
     install_path: str = 'plugins'
     proxy: ProxyConfig = ProxyConfig.get_default()
+    release_download_url_template: str = '{url}'
 
     @property
     def request_proxy(self) -> dict:

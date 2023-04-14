@@ -21,11 +21,15 @@ cache_interval: 2
 # 若设为 true，插件将在每次定时更新插件索引后自动检查更新
 check_update: true
 
-
 # The path to install the plugin, should be one of the value of 'plugin_directories' of the MCDR config
 # 安装插件的位置，应是 MCDR 配置中的 'plugin_directories' 中的一个
 install_path: plugins
 
+# The url template used when downloading GitHub release assets, where '{url}' will be replaced with the actual url
+# Example using ghproxy: https://ghproxy.com/{url}, the download url will be https://ghproxy.com/https://github.com/user/repo/releases/download/...
+# 在下载 GitHub 发布素材时使用的 url 模版，'{url}' 将被替换为实际的 url
+# 使用 ghproxy 的例子: https://ghproxy.com/{url}，实际下载 url 将被替换为 https://ghproxy.com/https://github.com/user/repo/releases/download/...
+release_download_url_template: '{url}'
 
 # Proxy addresses, both http and https is optional
 # 代理地址，http 与 https 都是可选的
