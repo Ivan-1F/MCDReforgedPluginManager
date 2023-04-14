@@ -1,6 +1,6 @@
 {
     "id": "mcdreforged_plugin_manager",
-    "version": "1.3.3",
+    "version": "2.0.0",
     "name": "MCDReforged Plugin Manager",
     "description": {
         "en_us": "Manage your mcdreforged plugins with ease",
