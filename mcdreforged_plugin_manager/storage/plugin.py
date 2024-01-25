@@ -223,20 +223,20 @@ class Plugin(Serializable):
     release: ReleaseSummary
 
     @classmethod
-    def create(cls, plugin_json: dict, meta_json: dict, release_json: dict):
+    def create(cls, all_of_a_plugin: dict):
         """
-        Create a plugin from a folder contains `plugin.json`, `meta.json` and `release.json`
-        of PluginCatalogue `meta` branch
+        Create a plugin from a AllOfAPlugin object
 
-        :param plugin_json: plugin.json
-        :param meta_json: meta.json
-        :param release_json: release.json
+        :param all_of_a_plugin: a AllOfAPlugin object
         :return:
         """
-        meta = MetaInfo.deserialize(meta_json)
-        meta.labels = plugin_json['labels']
 
-        release = ReleaseSummary.deserialize(release_json)
+        # TODO: refactored to compat latest schema
+        meta = MetaInfo.deserialize(all_of_a_plugin['meta'])
+        meta.labels = all_of_a_plugin['plugin']['labels']
+        meta.repository = all_of_a_plugin['repository']['url']
+
+        release = ReleaseSummary.deserialize(all_of_a_plugin['release'])
 
         return cls(meta=meta, release=release)
 
@@ -254,7 +254,7 @@ class PluginStorage(Serializable):
             if any([label in labels for label in plugin.meta.labels]):
                 yield plugin
 
-    def search(self, query: str) -> Iterable[MetaInfo]:
+    def search(self, query: str) -> Iterable[Plugin]:
         for plugin in self.plugins.values():
             if query in plugin.meta.name or query in plugin.meta.id or query in plugin.meta.description:
                 yield plugin

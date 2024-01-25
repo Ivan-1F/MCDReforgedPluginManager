@@ -17,7 +17,7 @@ class Configure(Serializable):
     DEFAULT_CONFIG = psi.open_bundled_file('resources/default_config.yml')
 
     permission: int = PermissionLevel.PHYSICAL_SERVER_CONTROL_LEVEL
-    source: str = 'https://github.com/MCDReforged/PluginCatalogue/archive/refs/heads/meta.zip'
+    source: str = 'https://raw.githubusercontent.com/MCDReforged/PluginCatalogue/meta/everything.json'
     timeout: int = 15
     cache_interval: int = 30
     check_update: bool = True

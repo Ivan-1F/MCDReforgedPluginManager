@@ -50,9 +50,8 @@ class InstallPluginOperation(InstallerOperation):
         if self.operation in [DependencyOperation.INSTALL, DependencyOperation.UPGRADE]:
             summary = cache.get_plugin_by_id(self.name).release
             release = summary.get_latest_release()
-            asset = release.get_mcdr_assets()[0]
-            url = config.release_download_url_template.format(url=asset.browser_download_url)
-            filename = asset.name
+            url = config.release_download_url_template.format(url=release.asset.browser_download_url)
+            filename = release.asset.name
             temp_filename = filename + '.temp'
             download_filename = temp_filename if self.operation == DependencyOperation.UPGRADE else filename
             download_path = os.path.join(self.install_path, download_filename)

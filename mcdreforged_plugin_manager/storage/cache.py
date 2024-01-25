@@ -44,22 +44,22 @@ class CacheClock(Thread):
 
 
 class Cache(PluginStorage):
-    CACHE_PATH = psi.get_data_folder()
+    CACHE_PATH = os.path.join(psi.get_data_folder(), 'everything.json')
 
     @new_thread('MPMCache')
     def cache(self):
         before = self.plugin_amount
 
         psi.logger.info(tr('cache.cache'))
-        zip_path = os.path.join(self.CACHE_PATH, 'meta.zip')
 
         try:
-            download_file(config.source, zip_path)
-            unzip(zip_path, self.CACHE_PATH)
+            # remove cache if exist
+            if os.path.exists(self.CACHE_PATH) and os.path.isfile(self.CACHE_PATH):
+                os.remove(self.CACHE_PATH)
+            download_file(config.source, self.CACHE_PATH)
         except Exception as e:
             psi.logger.warning(tr('cache.exception', e))
         else:
-            os.remove(zip_path)
             self.load()
             psi.logger.info(tr('cache.cached', self.plugin_amount - before))
 
@@ -71,21 +71,12 @@ class Cache(PluginStorage):
         self.plugin_amount = 0
         self.plugins.clear()
 
-        meta_path = os.path.join(self.CACHE_PATH, 'PluginCatalogue-meta')
-        for plugin_path, _, _ in os.walk(meta_path):
-            def load_plugin_file(filename: str):
-                with open(os.path.join(plugin_path, filename), 'r', encoding='utf8') as f:
-                    return json.load(f)
-
-            if plugin_path == meta_path:
-                continue
-
-            plugin_json = load_plugin_file('plugin.json')
-            meta_json = load_plugin_file('meta.json')
-            release_json = load_plugin_file('release.json')
-
-            plugin = Plugin.create(plugin_json, meta_json, release_json)
-            plugin_id = meta_json['id']
+        with open(self.CACHE_PATH, 'r') as f:
+            data = json.load(f)
+        
+        for plugin in data['plugins'].values():
+            plugin = Plugin.create(plugin)
+            plugin_id = plugin.meta.id
             self.plugins[plugin_id] = plugin
             self.plugin_amount += 1
 

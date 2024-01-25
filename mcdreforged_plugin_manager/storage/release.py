@@ -19,20 +19,17 @@ class ReleaseInfo(Serializable):
     name: str
     tag_name: str
     created_at: str
-    assets: List[AssetInfo]
-    description: str
+    asset: AssetInfo
+    description: Optional[str]
     prerelease: bool
-
-    def get_mcdr_assets(self) -> List[AssetInfo]:
-        return [asset for asset in self.assets if asset.name.endswith('.mcdr') or asset.name.endswith('.pyz')]
 
 
 class ReleaseSummary(Serializable):
     id: str
-    latest_version: str
+    latest_version_index: Optional[int]
     releases: List[ReleaseInfo]
 
     def get_latest_release(self) -> Optional[ReleaseInfo]:
-        if len(self.releases) > 0:
-            return self.releases[0]
+        if self.latest_version_index is not None:
+            return self.releases[self.latest_version_index]
         return None
