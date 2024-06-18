@@ -71,7 +71,7 @@ class Cache(PluginStorage):
         self.plugin_amount = 0
         self.plugins.clear()
 
-        with open(self.CACHE_PATH, 'r') as f:
+        with open(self.CACHE_PATH, 'r', encoding='utf8') as f:
             data = json.load(f)
         
         for plugin in data['plugins'].values():
