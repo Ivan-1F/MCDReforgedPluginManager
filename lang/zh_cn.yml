@@ -94,3 +94,6 @@ mcdreforged_plugin_manager:
     title: '§l以下插件需要更新:'
     all_up_to_date: §a所有插件均为最新版
     click_to_upgrade: 更新至 {0}
+
+  search:
+    empty: §c未找到满足条件的插件

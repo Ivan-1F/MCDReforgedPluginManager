@@ -56,9 +56,12 @@ def list_plugins(source: CommandSource, labels: Optional[Union[None, str, List[s
 
 
 def search(source: CommandSource, query: str):
-    for plugin in cache.search(query):
+    plugins = list(cache.search(query))
+    for plugin in plugins:
         source.reply(plugin.meta.brief)
         source.reply('')
+    if len(plugins) == 0:
+        source.reply(tr('search.empty'))
 
 
 @ensure_plugin_id

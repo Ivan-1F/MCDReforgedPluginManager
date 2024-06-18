@@ -94,3 +94,6 @@ mcdreforged_plugin_manager:
     title: '§lThe following plugins need to be upgraded:'
     all_up_to_date: §aAll plugins are up to date
     click_to_upgrade: Upgrade to {0}
+
+  search:
+    empty: No plugin was found
