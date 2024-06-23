@@ -60,14 +60,14 @@ class Cache(PluginStorage):
         except Exception as e:
             psi.logger.warning(tr('cache.exception', e))
         else:
-            self.load()
+            self.__load()
             psi.logger.info(tr('cache.cached', self.plugin_amount - before))
 
             if config.check_update:
                 from mcdreforged_plugin_manager.util import upgrade_helper
                 upgrade_helper.show_check_update_result(psi.logger.info)
 
-    def load(self):
+    def __load(self):
         self.plugin_amount = 0
         self.plugins.clear()
 

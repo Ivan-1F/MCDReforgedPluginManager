@@ -83,7 +83,7 @@ def on_load(server: PluginServerInterface, old):
     if hasattr(old, 'cache_clock'):
         cache_clock.last_update_time = old.cache_clock.last_update_time
     cache_clock.start()
-    cache.load()
+    cache.cache()
     register_commands(server)
     server.register_help_message(constants.PREFIX, tr('help_summary'))
 
