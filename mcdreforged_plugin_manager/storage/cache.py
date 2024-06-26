@@ -45,6 +45,7 @@ class CacheClock(Thread):
 
 class Cache(PluginStorage):
     CACHE_PATH = os.path.join(psi.get_data_folder(), 'everything.json')
+    TMP_CACHE_PATH = os.path.join(psi.get_data_folder(), 'everything.json.tmp')
 
     @new_thread('MPMCache')
     def cache(self):
@@ -53,13 +54,15 @@ class Cache(PluginStorage):
         psi.logger.info(tr('cache.cache'))
 
         try:
-            # remove cache if exist
-            if os.path.exists(self.CACHE_PATH) and os.path.isfile(self.CACHE_PATH):
-                os.remove(self.CACHE_PATH)
-            download_file(config.source, self.CACHE_PATH)
+            download_file(config.source, self.TMP_CACHE_PATH)
         except Exception as e:
             psi.logger.warning(tr('cache.exception', e))
         else:
+            # remove cache if exist
+            if os.path.exists(self.CACHE_PATH) and os.path.isfile(self.CACHE_PATH):
+                os.remove(self.CACHE_PATH)
+            os.rename(self.TMP_CACHE_PATH, self.CACHE_PATH)
+
             self.__load()
             psi.logger.info(tr('cache.cached', self.plugin_amount - before))
 
