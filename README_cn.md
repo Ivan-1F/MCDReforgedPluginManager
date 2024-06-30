@@ -1,6 +1,9 @@
 MCDReforgedPluginManager
 -----
 
+> [!TIP]
+> 已弃用，请使用 [MCDR 的内置插件安装器](https://docs.mcdreforged.com/en/latest/command/mcdr.html#plugin-catalogue-access)
+
 [English](./README_cn.md) | **中文**
 
 > 轻松管理你的 MCDReforged 插件

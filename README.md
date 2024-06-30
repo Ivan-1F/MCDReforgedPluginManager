@@ -1,6 +1,9 @@
 MCDReforgedPluginManager
 -----
 
+> [!TIP]
+> Deprecated, use [MCDR's build-in plugin installer](https://docs.mcdreforged.com/en/latest/command/mcdr.html#plugin-catalogue-access) instead
+
 **English** | [中文](./README_cn.md)
 
 > Manage your mcdreforged plugins with ease
