@@ -47,13 +47,13 @@ def ensure_plugin_installed(func: Callable):
     A decorator that ensures the plugin id(s) in the function parameter is installed
     """
     @functools.wraps(func)
-    def wrapper(source: CommandSource, plugin_id: Union[str, List[str]], *args, **kwargs):
-        plugin_ids = [plugin_id] if isinstance(plugin_id, str) else plugin_id
+    def wrapper(source: CommandSource, plugin_id_input: Union[str, List[str]], *args, **kwargs):
+        plugin_ids = [plugin_id_input] if isinstance(plugin_id_input, str) else plugin_id_input
         for plugin_id in plugin_ids:
             if not is_plugin_loaded(plugin_id):
                 source.reply(tr('plugin.not_installed', plugin_id))
                 return
-        func(source, plugin_ids, *args, **kwargs)
+        func(source, plugin_id_input, *args, **kwargs)
 
     return wrapper
 
