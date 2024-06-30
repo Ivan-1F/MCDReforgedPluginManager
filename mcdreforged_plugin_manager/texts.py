@@ -7,5 +7,5 @@ from mcdreforged_plugin_manager.util.translation_util import tr
 CONFIRM_COMMAND_TEXT = command_run(
     RText(constants.PREFIX + ' confirm').set_color(RColor.gold),
     '!!mpm confirm',
-    tr('installer.confirm.command_hover')
+    tr('install.confirm.command_hover')
 )
