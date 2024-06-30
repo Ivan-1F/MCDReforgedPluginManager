@@ -47,6 +47,9 @@ class Cache(PluginStorage):
     CACHE_PATH = os.path.join(psi.get_data_folder(), 'everything.json')
     TMP_CACHE_PATH = os.path.join(psi.get_data_folder(), 'everything.json.tmp')
 
+    def __init__(self):
+        self.loaded = False
+
     @new_thread('MPMCache')
     def cache(self):
         before = self.plugin_amount
@@ -75,14 +78,20 @@ class Cache(PluginStorage):
         self.plugin_amount = 0
         self.plugins.clear()
 
-        with open(self.CACHE_PATH, 'r', encoding='utf8') as f:
-            data = json.load(f)
-        
-        for plugin in data['plugins'].values():
-            plugin = Plugin.create(plugin)
-            plugin_id = plugin.meta.id
-            self.plugins[plugin_id] = plugin
-            self.plugin_amount += 1
+        try:
+            with open(self.CACHE_PATH, 'r', encoding='utf8') as f:
+                data = json.load(f)
+            
+            for plugin in data['plugins'].values():
+                plugin = Plugin.create(plugin)
+                plugin_id = plugin.meta.id
+                self.plugins[plugin_id] = plugin
+                self.plugin_amount += 1
+        except Exception as e:
+            psi.logger.warn(tr('cache.load_failed'))
+            self.loaded = False
+        else:
+            self.loaded = True
 
 
 cache = Cache()

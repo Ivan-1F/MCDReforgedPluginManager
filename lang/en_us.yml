@@ -19,6 +19,8 @@ mcdreforged_plugin_manager:
     cached: Plugin index updated; {0} new plugins
     exception: 'Failed to update plugin index: {0}'
     exception_ingame: '§cFailed to update plugin index, see console for more details'
+    load_failed: 'Failed to load cache'
+    not_loaded: '§cPlugin index not loaded'
     clock:
       started: 'Plugin index update clock started, interval: {0} seconds'
   plugin:
