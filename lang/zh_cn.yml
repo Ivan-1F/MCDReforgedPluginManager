@@ -18,6 +18,7 @@ mcdreforged_plugin_manager:
     cache: 正在更新插件库索引
     cached: 插件库索引更新完成; 新增 {0} 个插件
     exception: '插件库索引更新失败: {0}'
+    exception_ingame: '§c插件库索引更新失败，查看控制台以获取更多信息'
     clock:
       started: 插件库索引定时更新计时器启动，间隔 {0} 秒
   plugin:

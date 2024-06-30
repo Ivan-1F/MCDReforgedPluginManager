@@ -56,6 +56,7 @@ class Cache(PluginStorage):
         try:
             download_file(config.source, self.TMP_CACHE_PATH)
         except Exception as e:
+            psi.say(tr('cache.exception_ingame'))
             psi.logger.warning(tr('cache.exception', e))
         else:
             # remove cache if exist
