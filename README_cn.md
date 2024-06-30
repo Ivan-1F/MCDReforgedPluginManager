@@ -24,7 +24,9 @@ MCDReforgedPluginManager 从 [PluginCatalogue](https://github.com/MCDReforged/Pl
 
 ## 依赖
 
-- [MCDReforged](https://github.com/Fallen-Breath/MCDReforged) >=2.0.0
+[MCDReforged](https://github.com/Fallen-Breath/MCDReforged) 依赖：`>=2.0.0`
+
+Python 包要求：见 [requirements.txt](https://github.com/Ivan-1F/MCDReforgedPluginManager/blob/master/requirements.txt)
 
 ## 配置
 

@@ -24,7 +24,9 @@ MCDReforgedPluginManager fetch plugin metadata from [PluginCatalogue](https://gi
 
 ## Requirements
 
-- [MCDReforged](https://github.com/Fallen-Breath/MCDReforged) >=2.0.0
+[MCDReforged](https://github.com/Fallen-Breath/MCDReforged) requirement: `>=2.0.0`
+
+Python package requirements: See [requirements.txt](https://github.com/Ivan-1F/MCDReforgedPluginManager/blob/master/requirements.txt)
 
 ## Configuration
 
