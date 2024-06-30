@@ -1,4 +1,4 @@
-from mcdreforged.plugin.server_interface import ServerInterface
+from mcdreforged.api.all import *
 
 
 psi = ServerInterface.get_instance().as_plugin_server_interface()

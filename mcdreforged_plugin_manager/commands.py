@@ -1,7 +1,7 @@
 import functools
 from typing import Callable, List, Union, Optional
 
-from mcdreforged.command.command_source import CommandSource
+from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.constants import meta, PREFIX
 from mcdreforged_plugin_manager.storage.cache import cache

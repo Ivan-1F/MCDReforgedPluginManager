@@ -1,6 +1,4 @@
-from mcdreforged.command.builder.nodes.arguments import Text, GreedyText
-from mcdreforged.command.builder.nodes.basic import Literal
-from mcdreforged.plugin.server_interface import PluginServerInterface
+from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager import constants
 from mcdreforged_plugin_manager.commands import show_help_message, info, list_plugins, search, install, uninstall, \

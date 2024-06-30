@@ -4,7 +4,7 @@ import time
 from threading import Event, Thread
 from typing import Callable
 
-from mcdreforged.api.decorator import new_thread
+from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.config import config
 from mcdreforged_plugin_manager.constants import psi

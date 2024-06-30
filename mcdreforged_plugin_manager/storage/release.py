@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 import requests
-from mcdreforged.utils.serializer import Serializable
+from mcdreforged.api.all import *
 
 from mcdreforged_plugin_manager.config import config
 
