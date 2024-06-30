@@ -108,6 +108,10 @@ def get_operate_packages(requirements: List[str]) -> List[InstallPackageOperatio
     result: List[InstallPackageOperation] = []
     for line in requirements:
         package, requirement = parse_python_requirement(line)
+        if package.lstrip().startswith('mcdreforged'):
+            # skip mcdreforged requirement
+            # TODO: warn user here
+            continue
         dependency_checker = PackageDependencyChecker(package, requirement)
         try:
             dependency_checker.check()
@@ -127,6 +131,10 @@ def get_operations(plugin_id: str, dependency_operation: DependencyOperation) ->
     operations = [*operations, *get_operate_packages(plugin.meta.requirements)]
 
     for dep_id, requirement in plugin.meta.dependencies.items():
+        if dep_id.lstrip().startswith('mcdreforged'):
+            # skip mcdreforged dependency
+            # TODO: warn user here
+            continue
         plugin_checker = PluginDependencyChecker(dep_id, requirement)
         try:
             # the dependency is satisfied, ignore further dependency checking
