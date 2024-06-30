@@ -98,5 +98,5 @@ mcdreforged_plugin_manager:
     all_up_to_date: §aAll plugins are up to date
     click_to_upgrade: Upgrade to {0}
 
-  search:
-    empty: No plugin was found
+  list:
+    empty: §cNo plugin was found

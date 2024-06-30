@@ -64,9 +64,12 @@ def show_help_message(source: CommandSource):
 
 @ensure_cache_loaded
 def list_plugins(source: CommandSource, labels: Optional[Union[None, str, List[str]]] = None):
-    for plugin in cache.get_plugins_by_labels(labels):
+    plugins = list(cache.get_plugins_by_labels(labels))
+    for plugin in plugins:
         source.reply(plugin.meta.brief)
         source.reply('')
+    if len(plugins) == 0:
+        source.reply(tr('list.empty'))
 
 
 @ensure_cache_loaded
@@ -76,7 +79,7 @@ def search(source: CommandSource, query: str):
         source.reply(plugin.meta.brief)
         source.reply('')
     if len(plugins) == 0:
-        source.reply(tr('search.empty'))
+        source.reply(tr('list.empty'))
 
 
 @ensure_cache_loaded
